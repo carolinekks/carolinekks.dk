@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MY WEBSITE :3333</title>
+
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"></noscript>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Quicksand', sans-serif;
+      position: relative;
+      background-color: lightpink;
+      color: black;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      user-select:none;
+    }
+
+    body.dark-mode {
+      background-color: rebeccapurple;
+      color: white;
+    }
+
+    .about-me {
+      background: linear-gradient(135deg, #ffc1cc, #ffd1dc);
+      transition: background-color 0.5s ease;
+    }
+
+    body.dark-mode .about-me {
+      background: linear-gradient(135deg, #2e1a47, #4e3b6b);
+    }
+
+    .about-me-btn, .socials-btn, .gallery-btn, .changelog-btn{
+      margin-top: -50px;
+      margin-left: -700px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: auto;
+      transition: transform 0.2s ease, color 0.3s ease;
+    }
+
+    .about-me-btn:hover, .socials-btn:hover, .gallery-btn:hover, .changelog-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .about-me-btn:active, .socials-btn:active, .gallery-btn:active, .changelog-btn:active {
+      transform: scale(0.9);
+    }
+
+    .aboutme-icon, .socials-icon, .gallery-icon, .changelog-icon {
+      width: 80px;
+      height: 80px;
+      color: black;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.3s ease;
+    }
+
+    .button-text {
+      font-size: 1.1rem;
+      color: black;
+      margin-top: 5px;
+      transition: color 0.3s ease;
+    }
+
+    img[class$="-icon"] {
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      user-drag: none;
+      filter: invert(0) hue-rotate(0deg);
+      transition: 
+        filter 0.5s ease,
+        transform 0.3s ease;
+    }
+
+    body.dark-mode img[class$="-icon"] {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    body.dark-mode .button-text {
+      color: white;
+    }
+
+    .socials-btn {
+      margin-left: -300px;
+      margin-top: -106px;
+    }
+
+    .gallery-btn {
+      margin-left: 300px;
+      margin-top: -106px;
+    }
+
+    .changelog-btn {
+      margin-left: 720px;
+      margin-top: -106px;
+    }
+
+    .waves-container {
+      position: fixed;
+      bottom: -120px;
+      left: 0;
+      width: 100%;
+      height: 1000px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wave-wrapper {
+      position: absolute;
+      bottom: 0;
+      width: 200%; 
+      height: 1000px;
+      display: flex;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .wave1 .wave-wrapper {
+      animation-name: wave-scroll;
+      animation-duration: 12s;
+      color: #ff7f91cc;
+      z-index: 3;
+    }
+
+    .wave2 .wave-wrapper {
+      animation-name: wave-scroll-reverse;
+      animation-duration: 18s;
+      color: #ffa1b899;
+      bottom: 100px;
+      z-index: 2;
+    }
+
+    .wave3 .wave-wrapper {
+      animation-name: wave-scroll;
+      animation-duration: 24s;
+      color: #ff4c6dcc;
+      bottom: 20px;
+      z-index: 1;
+    }
+
+    .wave-wrapper svg {
+      flex-shrink: 0;
+      width: 50%;
+      height: 1000px;
+      fill: currentColor;
+    }
+
+    @keyframes wave-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes wave-scroll-reverse {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes pop-in {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes pop-out {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    .wave1 path {
+      fill: #ff7f91;
+      opacity: 0.5;
+    }
+
+    .wave2 path {
+      fill: #ffa1b8;
+      opacity: 0.35;
+    }
+
+    .wave3 path {
+      fill: #ff4c6d;
+      opacity: 0.4;
+    }
+
+    body.dark-mode .wave1 path {
+      fill: #6a4a82;
+      opacity: 0.6;
+    }
+
+    body.dark-mode .wave2 path {
+      fill: #8e6aa9;
+      opacity: 0.4;
+    }
+
+    body.dark-mode .wave3 path {
+      fill: #5c3e6a;
+      opacity: 0.5;
+    }
+
+    #sparkle-container {
+      width: 2000px;
+      height: 300px;
+      position: fixed;
+      top: -300;
+      pointer-events: none;
+      z-index: 10;
+      transform: translateY(300px)
+    }
+    .sparkle {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.7;
+      animation: sparkleAnim 2s infinite alternate;
+    }
+
+    @keyframes sparkleAnim {
+      0% { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+    
+    .sparkle::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: white;
+      transform: rotate(90deg);
+      border-radius: 2px;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 100vh;
+      min-height: 100vh;
+    }
+
+    .window, .about-me {
+      position: absolute;
+      width: 1000px;
+      height: 600px;
+      visibility: hidden;
+      min-height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      background: linear-gradient(135deg, #ffc1cc, #ffd1dc);
+      transition: background-color 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      left: 50vh;
+      top: 50vw;
+      animation: pop-in 0.5s ease-out forwards;
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    .window.show {
+      visibility: visible;
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .window.hide {
+      animation: shrink-out 0.5s ease-out forwards;
+    }
+
+    .window-title {
+      cursor: default;
+      background-color: rgb(88, 83, 86);
+      color: white;
+      padding: 10px 16px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .window-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      padding: 20px;
+      font-size: 1.3rem;
+      color: black;
+      background-color: transparent;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-y: auto;
+    }
+
+    .body-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      padding: 20px;
+      margin-top: -125px;
+    }
+
+    .main-text {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sub-text {
+      font-size: 1.5rem;
+      opacity: 0.85;
+    }
+
+    body.dark-mode .window,
+    body.dark-mode .about-me {
+      background: linear-gradient(135deg, #2e1a47, #4e3b6b);
+    }
+
+    body.dark-mode .window-body {
+      color: white;
+      background-color: transparent;
+    }
+
+    body.dark-mode .window-title {
+      background-color: rgb(88, 83, 86);
+    }
+
+    button.toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+      transform: scale(1);
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      outline: none;
+      font-size: 1rem;
+      color: black;
+      z-index: 999;
+      width: 60px;
+      height: 60px;
+    }
+
+    button.toggle-btn:hover,
+    button.toggle-btn:focus:hover {
+      transform: scale(1.1);
+    }
+
+    button.toggle-btn:focus:not(:hover) {
+      transform: scale(1);
+    }
+
+    button.toggle-btn.shrink {
+      transform: scale(0.8) !important;
+      transition: transform 0.1s ease !important;
+    }
+
+    body.dark-mode button.toggle-btn {
+      color: white;
+    }
+
+    svg {
+      width: 48px;
+      height: 48px;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: all 0.5s ease;
+      display: block;
+    }
+
+    .sun {
+      fill: black;
+      stroke: black;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    body.dark-mode .sun {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .sun-rays {
+      stroke: black;
+      transition: opacity 0.5s ease;
+    }
+
+    body.dark-mode .sun-rays {
+      opacity: 0;
+    }
+
+    .moon {
+      fill: black;
+      stroke: black;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      mask: url(#moon-mask);
+    }
+
+    body.dark-mode .moon {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="sparkle-container"></div>
+  <div class="waves-container" aria-hidden="true">
+    <div class="wave1">
+      <div class="wave-wrapper">
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 60 C150 90, 300 30, 450 60 C600 90, 600 60, 600 60 L600 150 L0 150 Z" />
+        </svg>
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 60 C150 90, 300 30, 450 60 C600 90, 600 60, 600 60 L600 150 L0 150 Z" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="wave2">
+      <div class="wave-wrapper">
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 80 C150 110, 300 50, 450 80 C600 110, 600 80, 600 80 L600 150 L0 150 Z" />
+        </svg>
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 80 C150 110, 300 50, 450 80 C600 110, 600 80, 600 80 L600 150 L0 150 Z" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="wave3">
+      <div class="wave-wrapper">
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 70 C150 100, 300 40, 450 70 C600 100, 600 70, 600 70 L600 150 L0 150 Z" />
+        </svg>
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0 70 C150 100, 300 40, 450 70 C600 100, 600 70, 600 70 L600 150 L0 150 Z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="window" id="draggable-window">
+    <div class="window-title" id="titlebar">waow..,</div>
+    <div class="window-body">
+      <div class="body-content">
+        <div class="main-text">Hellooo I'm Caroline! ^ω^</div>
+        <div class="sub-text">woaw</div>
+      </div>
+      <button class="about-me-btn" aria-label="About me">
+        <%= image_tag "aboutme.svg", class: "aboutme-icon" %>
+        <span class="button-text">About me</span>
+      </button>
+      <button class="socials-btn" aria-label="socials">
+        <%= image_tag "socials.svg", class: "socials-icon" %>
+        <span class="button-text">Socials</span>
+      </button>
+      <button class="gallery-btn" aria-label="gallery">
+        <%= image_tag "gallery.svg", class: "gallery-icon" %>
+        <span class="button-text">Gallery</span>
+      </button>
+      <button class="changelog-btn" aria-label="changelog">
+        <%= image_tag "changelog.svg", class: "changelog-icon" %>
+        <span class="button-text">Changelog</span>
+      </button>
+      </div>
+    </div>
+  </div>
+
+  <button class="toggle-btn" aria-label="Toggle Color Mode">
+    <svg viewBox="0 0 24 24">
+      <defs>
+        <mask id="moon-mask">
+          <rect width="100%" height="100%" fill="white" />
+          <circle cx="9" cy="12" r="5" fill="black" />
+        </mask>
+      </defs>
+      <circle class="sun" cx="12" cy="12" r="5" />
+      <g class="sun-rays">
+        <line x1="12" y1="1" x2="12" y2="3" />
+        <line x1="12" y1="21" x2="12" y2="23" />
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+        <line x1="1" y1="12" x2="3" y2="12" />
+        <line x1="21" y1="12" x2="23" y2="12" />
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+      </g>
+      <circle class="moon" cx="12" cy="12" r="5" />
+    </svg>
+  </button>
+
+  <audio id="light-sound" src="<%= asset_path 'light.mp3' %>" preload="auto"></audio>
+  <audio id="dark-sound" src="<%= asset_path 'dark.mp3' %>" preload="auto"></audio>
+  <audio id="button-click-sound" src="<%= asset_path 'click.mp3' %>" preload="auto"></audio>
+  <audio id="close-sound" src="<%= asset_path 'close.mp3' %>" preload="auto"></audio>
+
+  <script>
+    function centerWindow() {
+      const windowBox = document.getElementById("draggable-window");
+      const width = windowBox.offsetWidth;
+      const height = windowBox.offsetHeight;
+      const x = (window.innerWidth - width) / 2;
+      const y = (window.innerHeight - height) / 2;
+      windowBox.style.left = `${x}px`;
+      windowBox.style.top = `${y}px`;
+      windowBox.style.visibility = "visible";
+    }
+    window.addEventListener("load", centerWindow);
+    window.addEventListener("resize", centerWindow);
+
+    const toggleBtn = document.querySelector('button.toggle-btn');
+    const lightSound = document.getElementById("light-sound");
+    const darkSound = document.getElementById("dark-sound");
+    const toggleSound = document.getElementById("toggle-sound");
+    const buttonClickSound = document.getElementById("button-click-sound");
+    const closeSound = document.getElementById('close-sound');
+
+    toggleBtn.addEventListener('click', () => {
+      if (document.body.classList.contains('dark-mode')) {
+        lightSound.volume = 0.3;
+        lightSound.currentTime = 0;
+        lightSound.play();
+      } else {
+        darkSound.volume = 0.3;
+        darkSound.currentTime = 0;
+        darkSound.play();
+      }
+
+      document.body.classList.toggle('dark-mode');
+    });
+
+    function addShrink() {
+      toggleBtn.classList.add('shrink');
+    }
+
+    function removeShrink() {
+      toggleBtn.classList.remove('shrink');
+    }
+
+    toggleBtn.addEventListener('mousedown', addShrink);
+    toggleBtn.addEventListener('mouseup', removeShrink);
+    toggleBtn.addEventListener('mouseleave', removeShrink);
+
+    toggleBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      addShrink();
+    });
+    toggleBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      removeShrink();
+    });
+    toggleBtn.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      removeShrink();
+    });
+
+    const windowBox = document.getElementById("draggable-window");
+    const titleBar = document.getElementById("titlebar");
+
+    function clampWindowPosition(x, y, box) {
+      const minX = 0;
+      const minY = 0;
+      const maxX = window.innerWidth - box.offsetWidth;
+      const maxY = window.innerHeight - box.offsetHeight;
+      const clampedX = Math.min(Math.max(x, minX), maxX);
+      const clampedY = Math.min(Math.max(y, minY), maxY);
+      return { x: clampedX, y: clampedY };
+    }
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    titleBar.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      offsetX = e.clientX - windowBox.offsetLeft;
+      offsetY = e.clientY - windowBox.offsetTop;
+      windowBox.style.transition = "none";
+      windowBox.style.transform = "";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+        const pos = clampWindowPosition(newX, newY, windowBox);
+        windowBox.style.left = pos.x + "px";
+        windowBox.style.top = pos.y + "px";
+        windowBox.style.transform = "";
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+      windowBox.style.transition = "";
+    });
+
+    window.addEventListener("resize", () => {
+      const currentLeft = windowBox.offsetLeft;
+      const currentTop = windowBox.offsetTop;
+      const clampedPos = clampWindowPosition(currentLeft, currentTop, windowBox);
+      windowBox.style.left = clampedPos.x + "px";
+      windowBox.style.top = clampedPos.y + "px";
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const aboutmeBtn = document.querySelector('.about-me-btn');
+      const socialsBtn = document.querySelector('.socials-btn');
+      const galleryBtn = document.querySelector('.gallery-btn');
+      const changelogBtn = document.querySelector('.changelog-btn');
+      let existingBlock = null; 
+      let socialsBlock = null;
+      let galleryBlock = null;
+      let changelogBlock = null;
+
+      function makeDraggable(windowElement) {
+        const titleBar = windowElement.querySelector('.window-title');
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        titleBar.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          offsetX = e.clientX - windowElement.offsetLeft;
+          offsetY = e.clientY - windowElement.offsetTop;
+          windowElement.style.transition = "none";
+          windowElement.style.transform = "";
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (isDragging) {
+            let newX = e.clientX - offsetX;
+            let newY = e.clientY - offsetY;
+
+            const minX = 0;
+            const minY = 0;
+            const maxX = window.innerWidth - windowElement.offsetWidth;
+            const maxY = window.innerHeight - windowElement.offsetHeight;
+            const clampedX = Math.min(Math.max(newX, minX), maxX);
+            const clampedY = Math.min(Math.max(newY, minY), maxY);
+
+            windowElement.style.left = `${clampedX}px`;
+            windowElement.style.top = `${clampedY}px`;
+          }
+        });
+
+        document.addEventListener('mouseup', () => {
+          isDragging = false;
+          windowElement.style.transition = "";
+        });
+      }
+
+      function handleAboutMeClick() {
+        buttonClickSound.volume = 0.3;
+        buttonClickSound.currentTime = 0;
+        buttonClickSound.play();
+        if (existingBlock) return;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'window about-me';
+        newBlock.style.cssText = `
+          position: absolute; 
+          left: ${Math.random() * 50}vw; 
+          top: ${Math.random() * 30}vh; 
+          width: 1000px; 
+          height: 600px; 
+          visibility: visible; 
+          border-radius: 10px; 
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+          display: flex; 
+          flex-direction: column;
+          z-index: 10;
+          animation: pop-in 0.5s ease-out forwards;
+          transform: scale(0);
+          opacity: 0;
+        `;
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '✖';
+        closeButton.style.cssText = `
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: transparent;
+          border: none;
+          color: white;
+          border-radius: 5px;
+          padding: 5px, 10px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          outline: none;
+          transition: transform 0.2s ease, background-color 0.3s ease;
+        `;
+
+        closeButton.addEventListener('mouseover', () => {
+          closeButton.style.transform = 'scale(1.2)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mouseout', () => {
+          closeButton.style.transform = 'scale(1)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mousedown', () => {
+          closeButton.style.transform = 'scale(0.8)';
+        });
+
+        closeButton.addEventListener('mouseup', () => {
+          closeButton.style.transform = 'scale(1)';
+        });
+
+        closeButton.addEventListener('click', () => {
+          closeSound.volume = 0.3;
+          closeSound.currentTime = 0;
+          closeSound.play();
+          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+          setTimeout(() => {
+            newBlock.remove();
+            existingBlock = null;
+          }, 500);
+        });
+
+        const titleBar = document.createElement('div');
+        titleBar.className = 'window-title';
+        titleBar.textContent = 'About me!~';
+        titleBar.style.cssText = `
+          background-color: rgb(88, 83, 86); 
+          color: white; 
+          padding: 10px 16px; 
+          font-weight: bold; 
+          font-size: 1.2rem; 
+          cursor: default; 
+          user-select: none;
+        `;
+
+        const bodyContent = document.createElement('div');
+        bodyContent.className = 'window-body';
+        bodyContent.innerHTML = `
+          <div class="main-text">RAHHHH</div>
+          <div class="sub-text">burber..,</div>
+        `;
+        bodyContent.style.cssText = `
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          justify-content: center; 
+          text-align: center; 
+          height: 100%; 
+          padding: 20px; 
+        `;
+
+        newBlock.appendChild(closeButton);
+        newBlock.appendChild(titleBar);
+        newBlock.appendChild(bodyContent);
+        document.body.appendChild(newBlock);
+
+        makeDraggable(newBlock);
+        existingBlock = newBlock;
+      }
+
+      function handleSocialsClick() {
+        buttonClickSound.volume = 0.3;
+        buttonClickSound.currentTime = 0;
+        buttonClickSound.play();
+        if (socialsBlock) return;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'window socials';
+        newBlock.style.cssText = `
+          position: absolute; 
+          left: ${Math.random() * 50}vw; 
+          top: ${Math.random() * 30}vh; 
+          width: 1000px; 
+          height: 600px; 
+          visibility: visible; 
+          border-radius: 10px; 
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+          display: flex; 
+          flex-direction: column;
+          z-index: 10;
+          animation: pop-in 0.5s ease-out forwards;
+          transform: scale(0);
+          opacity: 0;
+        `;
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '✖';
+        closeButton.style.cssText = `
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: transparent;
+          border: none;
+          color: white;
+          border-radius: 5px;
+          padding: 5px, 10px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          outline: none;
+          transition: transform 0.2s ease, background-color 0.3s ease;
+        `;
+
+        closeButton.addEventListener('click', () => {
+          closeSound.volume = 0.3;
+          closeSound.currentTime = 0;
+          closeSound.play();
+          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+          setTimeout(() => {
+            newBlock.remove();
+            socialsBlock = null;
+          }, 500);
+        });
+
+        const titleBar = document.createElement('div');
+        titleBar.className = 'window-title';
+        titleBar.textContent = 'My Socials!~';
+        titleBar.style.cssText = `
+          background-color: rgb(88, 83, 86); 
+          color: white; 
+          padding: 10px 16px; 
+          font-weight: bold; 
+          font-size: 1.2rem; 
+          cursor: default; 
+          user-select: none;
+        `;
+
+        const bodyContent = document.createElement('div');
+        bodyContent.className = 'window-body';
+        bodyContent.innerHTML = `
+          <div class="main-text">Coming soon! (◕‿◕✿)</div>
+          <div class="sub-text">Working on cute things~</div>
+        `;
+
+        newBlock.appendChild(closeButton);
+        newBlock.appendChild(titleBar);
+        newBlock.appendChild(bodyContent);
+        document.body.appendChild(newBlock);
+
+        makeDraggable(newBlock);
+        socialsBlock = newBlock;
+      }
+
+      function handleGalleryClick() {
+        buttonClickSound.volume = 0.3;
+        buttonClickSound.currentTime = 0;
+        buttonClickSound.play();
+        if (galleryBlock) return;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'window gallery';
+        newBlock.style.cssText = `
+          position: absolute; 
+          left: ${Math.random() * 50}vw; 
+          top: ${Math.random() * 30}vh; 
+          width: 1000px; 
+          height: 600px; 
+          visibility: visible; 
+          border-radius: 10px; 
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+          display: flex; 
+          flex-direction: column;
+          z-index: 10;
+          animation: pop-in 0.5s ease-out forwards;
+          transform: scale(0);
+          opacity: 0;
+        `;
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '✖';
+        closeButton.style.cssText = `
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: transparent;
+          border: none;
+          color: white;
+          border-radius: 5px;
+          padding: 5px, 10px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          outline: none;
+          transition: transform 0.2s ease, background-color 0.3s ease;
+        `;
+
+        closeButton.addEventListener('click', () => {
+          closeSound.volume = 0.3;
+          closeSound.currentTime = 0;
+          closeSound.play();
+          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+          setTimeout(() => {
+            newBlock.remove();
+            projectsBlock = null;
+          }, 500);
+        });
+
+        const titleBar = document.createElement('div');
+        titleBar.className = 'window-title';
+        titleBar.textContent = 'THE GALLERY!!!';
+        titleBar.style.cssText = `
+          background-color: rgb(88, 83, 86); 
+          color: white; 
+          padding: 10px 16px; 
+          font-weight: bold; 
+          font-size: 1.2rem; 
+          cursor: default; 
+          user-select: none;
+        `;
+
+        const bodyContent = document.createElement('div');
+        bodyContent.className = 'window-body';
+        bodyContent.innerHTML = `
+          <div class="main-text">Coming soon! (◕‿◕✿)</div>
+          <div class="sub-text">Working on cute things~</div>
+        `;
+
+        newBlock.appendChild(closeButton);
+        newBlock.appendChild(titleBar);
+        newBlock.appendChild(bodyContent);
+        document.body.appendChild(newBlock);
+
+        makeDraggable(newBlock);
+        projectsBlock = newBlock;
+      }
+
+      function handleChangelogClick() {
+        buttonClickSound.volume = 0.3;
+        buttonClickSound.currentTime = 0;
+        buttonClickSound.play();
+        if (changelogBlock) return;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'window changelog';
+        newBlock.style.cssText = `
+          position: absolute; 
+          left: ${Math.random() * 50}vw; 
+          top: ${Math.random() * 30}vh; 
+          width: 1000px; 
+          height: 600px; 
+          visibility: visible; 
+          border-radius: 10px; 
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+          display: flex; 
+          flex-direction: column;
+          z-index: 10;
+          animation: pop-in 0.5s ease-out forwards;
+          transform: scale(0);
+          opacity: 0;
+        `;
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '✖';
+        closeButton.style.cssText = `
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: transparent;
+          border: none;
+          color: white;
+          border-radius: 5px;
+          padding: 5px, 10px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          outline: none;
+          transition: transform 0.2s ease, background-color 0.3s ease;
+        `;
+
+        closeButton.addEventListener('click', () => {
+          closeSound.volume = 0.3;
+          closeSound.currentTime = 0;
+          closeSound.play();
+          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+          setTimeout(() => {
+            newBlock.remove();
+            projectsBlock = null;
+          }, 500);
+        });
+
+        const titleBar = document.createElement('div');
+        titleBar.className = 'window-title';
+        titleBar.textContent = 'Changelog~';
+        titleBar.style.cssText = `
+          background-color: rgb(88, 83, 86); 
+          color: white; 
+          padding: 10px 16px; 
+          font-weight: bold; 
+          font-size: 1.2rem; 
+          cursor: default; 
+          user-select: none;
+        `;
+
+        const bodyContent = document.createElement('div');
+        bodyContent.className = 'window-body';
+        bodyContent.innerHTML = `
+          <div class="main-text">Coming soon! (◕‿◕✿)</div>
+          <div class="sub-text">Working on cute things~</div>
+        `;
+
+        newBlock.appendChild(closeButton);
+        newBlock.appendChild(titleBar);
+        newBlock.appendChild(bodyContent);
+        document.body.appendChild(newBlock);
+
+        makeDraggable(newBlock);
+        projectsBlock = newBlock;
+      }
+
+      aboutmeBtn.addEventListener('click', handleAboutMeClick); 
+      socialsBtn.addEventListener('click', handleSocialsClick);
+      galleryBtn.addEventListener('click', handleGalleryClick);
+      changelogBtn.addEventListener('click', handleChangelogClick);
+
+      const NUM_SPARKLES = 60;
+      const container = document.getElementById('sparkle-container');
+
+      function createSparkle() {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+
+        const size = Math.random() * 3 + 2;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+
+        sparkle.style.left = `${Math.random() * 100}%`;
+        sparkle.style.top = `${Math.random() * 100}%`;
+
+        sparkle.style.animationDelay = `${Math.random() * 4}s`;
+
+        container.appendChild(sparkle);
+      }
+
+      for (let i = 0; i < NUM_SPARKLES; i++) {
+        createSparkle();
+      }
+    });
+  </script>
+</body>
+</html>
