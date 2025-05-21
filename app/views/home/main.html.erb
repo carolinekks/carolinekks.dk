@@ -609,7 +609,7 @@
       const minX = 0;
       const minY = 0;
       const maxX = window.innerWidth - box.offsetWidth;
-      const maxY = window.innerHeight - box.offsetHeight;
+      const maxY = 1.485*box.offsetHeight;
       const clampedX = Math.min(Math.max(x, minX), maxX);
       const clampedY = Math.min(Math.max(y, minY), maxY);
       return { x: clampedX, y: clampedY };
@@ -683,7 +683,7 @@
             const minX = 0;
             const minY = 0;
             const maxX = window.innerWidth - windowElement.offsetWidth;
-            const maxY = window.innerHeight - windowElement.offsetHeight;
+            const maxY = 1.485*windowElement.offsetHeight;
             const clampedX = Math.min(Math.max(newX, minX), maxX);
             const clampedY = Math.min(Math.max(newY, minY), maxY);
 
