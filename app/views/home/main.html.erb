@@ -345,7 +345,7 @@
     }
 
     .sub-text {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       opacity: 0.85;
     }
 
@@ -487,11 +487,12 @@
   </div>
 
   <div class="window" id="draggable-window">
-    <div class="window-title" id="titlebar">waow..,</div>
+    <div class="window-title" id="titlebar">woaw..,</div>
     <div class="window-body">
       <div class="body-content">
         <div class="main-text">Hellooo I'm Caroline! ^ω^</div>
-        <div class="sub-text">woaw</div>
+        <div class="sub-text">girlfailure, puppy, and a professional idiot</div>
+        <div class="sub-text">(im ballin beyond belief)</div>
       </div>
       <button class="about-me-btn" aria-label="About me">
         <%= image_tag "aboutme.svg", class: "aboutme-icon" %>
@@ -848,6 +849,25 @@
           transition: transform 0.2s ease, background-color 0.3s ease;
         `;
 
+        closeButton.addEventListener('mouseover', () => {
+          closeButton.style.transform = 'scale(1.2)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mouseout', () => {
+          closeButton.style.transform = 'scale(1)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mousedown', () => {
+          closeButton.style.transform = 'scale(0.8)';
+        });
+
+        closeButton.addEventListener('mouseup', () => {
+          closeButton.style.transform = 'scale(1)';
+        });
+
+
         closeButton.addEventListener('click', () => {
           closeSound.volume = 0.3;
           closeSound.currentTime = 0;
@@ -930,6 +950,25 @@
           transition: transform 0.2s ease, background-color 0.3s ease;
         `;
 
+        closeButton.addEventListener('mouseover', () => {
+          closeButton.style.transform = 'scale(1.2)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mouseout', () => {
+          closeButton.style.transform = 'scale(1)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mousedown', () => {
+          closeButton.style.transform = 'scale(0.8)';
+        });
+
+        closeButton.addEventListener('mouseup', () => {
+          closeButton.style.transform = 'scale(1)';
+        });
+
+
         closeButton.addEventListener('click', () => {
           closeSound.volume = 0.3;
           closeSound.currentTime = 0;
@@ -1011,6 +1050,25 @@
           outline: none;
           transition: transform 0.2s ease, background-color 0.3s ease;
         `;
+
+        closeButton.addEventListener('mouseover', () => {
+          closeButton.style.transform = 'scale(1.2)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mouseout', () => {
+          closeButton.style.transform = 'scale(1)';
+          closeButton.style.backgroundColor = 'transparent';
+        });
+
+        closeButton.addEventListener('mousedown', () => {
+          closeButton.style.transform = 'scale(0.8)';
+        });
+
+        closeButton.addEventListener('mouseup', () => {
+          closeButton.style.transform = 'scale(1)';
+        });
+
 
         closeButton.addEventListener('click', () => {
           closeSound.volume = 0.3;
