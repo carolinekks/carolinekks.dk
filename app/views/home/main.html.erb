@@ -163,7 +163,7 @@
     }
 
     @keyframes wave-scroll {
-      0% { transform: translateX(0); }
+      0% { transform: translateX(0); } // TRANS ??? LATEX ?? MMMFGH..,
       100% { transform: translateX(-50%); }
     }
     @keyframes wave-scroll-reverse {
@@ -948,8 +948,52 @@
             transition: color 0.3s ease;
         `;
 
+        const steamContainer2 = document.createElement('div');
+        steamContainer2.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 100px;
+            left: 80%;
+            transform: translateX(-50%); 
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const steamButton2 = document.createElement('button');
+        steamButton2.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+        `;
+
+        const steamImg2 = document.createElement('img');
+        steamImg2.src = '<%= asset_path "steam2.webp" %>';
+        steamImg2.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        `;
+
+        const steamText2 = document.createElement('div');
+        steamText2.textContent = 'Steam (again)';
+        steamText2.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
         const darkModeObserver = new MutationObserver(() => {
             steamText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            steamText2.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
         });
         darkModeObserver.observe(document.body, {
             attributes: true,
@@ -963,6 +1007,10 @@
         steamButton.appendChild(steamImg);
         steamContainer.appendChild(steamButton);
         steamContainer.appendChild(steamText);
+
+        steamButton2.appendChild(steamImg2);
+        steamContainer2.appendChild(steamButton2);
+        steamContainer2.appendChild(steamText2);
 
         steamButton.addEventListener('mouseover', () => {
           steamButton.style.transform = 'scale(1.1)';
@@ -987,12 +1035,35 @@
           window.open('https://steamcommunity.com/id/carolinekks/', '_blank');
         });
 
+        steamButton2.addEventListener('mouseover', () => {
+            steamButton2.style.transform = 'scale(1.1)';
+            steamImg2.style.transform = 'scale(1.05)';
+        });
+
+        steamButton2.addEventListener('mouseout', () => {
+            steamButton2.style.transform = 'scale(1)';
+            steamImg2.style.transform = 'scale(1)';
+        });
+
+        steamButton2.addEventListener('mousedown', () => {
+            steamButton2.style.transform = 'scale(1)';
+            steamImg2.style.transform = 'scale(1)';
+        });
+
+        steamButton2.addEventListener('click', () => {
+            buttonClickSound.volume = 0.3;
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+            window.open('https://steamcommunity.com/id/puppygirly/', '_blank');
+        });
+
         const infoText = document.createElement('div');
         infoText.className = 'sub-text';
         infoText.textContent = '[ all buttons here will open up a new tab ]';
         infoText.style.marginTop = '400px';
 
         bodyContent.appendChild(steamContainer);
+        bodyContent.appendChild(steamContainer2);
         bodyContent.appendChild(infoText);
 
         newBlock.appendChild(closeButton);
