@@ -869,6 +869,7 @@
 
 
         closeButton.addEventListener('click', () => {
+          darkModeObserver.disconnect();
           closeSound.volume = 0.3;
           closeSound.currentTime = 0;
           closeSound.play();
@@ -894,10 +895,105 @@
 
         const bodyContent = document.createElement('div');
         bodyContent.className = 'window-body';
-        bodyContent.innerHTML = `
-          <div class="main-text">Coming soon! (◕‿◕✿)</div>
-          <div class="sub-text">Working on cute things~</div>
+        bodyContent.style.cssText = `
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          position: relative;
+          height: 100%;
         `;
+
+        const steamContainer = document.createElement('div');
+        steamContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 100px;
+            left: 20%;
+            transform: translateX(-50%);
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const steamButton = document.createElement('button');
+        steamButton.style.cssText = `
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          transition: transform 0.2s ease;
+          border-radius: 50%;
+          overflow: hidden;
+          width: 100px;
+          height: 100px;
+        `;
+
+        const steamImg = document.createElement('img');
+        steamImg.src = '<%= asset_path "steammain.webp" %>';
+        steamImg.style.cssText = `
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        `;
+
+        const steamText = document.createElement('div');
+        steamText.textContent = 'Steam';
+        steamText.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
+        const darkModeObserver = new MutationObserver(() => {
+            steamText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+        });
+        darkModeObserver.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        if (document.body.classList.contains('dark-mode')) {
+            steamText.style.color = 'white';
+        }
+
+        steamButton.appendChild(steamImg);
+        steamContainer.appendChild(steamButton);
+        steamContainer.appendChild(steamText);
+
+        steamButton.addEventListener('mouseover', () => {
+          steamButton.style.transform = 'scale(1.1)';
+          steamImg.style.transform = 'scale(1.05)';
+        });
+
+        steamButton.addEventListener('mouseout', () => {
+          steamButton.style.transform = 'scale(1)';
+          steamImg.style.transform = 'scale(1)';
+        });
+
+
+        steamButton.addEventListener('mousedown', () => {
+          steamButton.style.transform = 'scale(1)';
+          steamImg.style.transform = 'scale(1)';
+        });
+
+        steamButton.addEventListener('click', () => {
+          buttonClickSound.volume = 0.3;
+          buttonClickSound.currentTime = 0;
+          buttonClickSound.play();
+          window.open('https://steamcommunity.com/id/carolinekks/', '_blank');
+        });
+
+        const infoText = document.createElement('div');
+        infoText.className = 'sub-text';
+        infoText.textContent = '[ all buttons here will open up a new tab ]';
+        infoText.style.marginTop = '400px';
+
+        bodyContent.appendChild(steamContainer);
+        bodyContent.appendChild(infoText);
 
         newBlock.appendChild(closeButton);
         newBlock.appendChild(titleBar);
