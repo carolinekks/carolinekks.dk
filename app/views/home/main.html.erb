@@ -991,10 +991,55 @@
             transition: color 0.3s ease;
         `;
 
+        const discordContainer = document.createElement('div');
+        discordContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const discordButton = document.createElement('button');
+        discordButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+        `;
+
+        const discordImg = document.createElement('img');
+        discordImg.src = '<%= asset_path "discord.webp" %>';
+        discordImg.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        `;
+
+        const discordText = document.createElement('div');
+        discordText.textContent = 'Discord';
+        discordText.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
         const darkModeObserver = new MutationObserver(() => {
             steamText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             steamText2.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            discordText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
         });
+
         darkModeObserver.observe(document.body, {
             attributes: true,
             attributeFilter: ['class']
@@ -1002,6 +1047,8 @@
 
         if (document.body.classList.contains('dark-mode')) {
             steamText.style.color = 'white';
+            steamText2.style.color = 'white';
+            discordText.style.color = 'white';
         }
 
         steamButton.appendChild(steamImg);
@@ -1011,6 +1058,97 @@
         steamButton2.appendChild(steamImg2);
         steamContainer2.appendChild(steamButton2);
         steamContainer2.appendChild(steamText2);
+
+        discordButton.appendChild(discordImg);
+        discordContainer.appendChild(discordButton);
+        discordContainer.appendChild(discordText);
+
+        discordButton.addEventListener('click', () => {
+            buttonClickSound.volume = 0.3;
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+            
+            const discordWindow = document.createElement('div');
+            discordWindow.className = 'window discord-info';
+            discordWindow.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 50}vw;
+                top: ${Math.random() * 30}vh;
+                width: 700px;
+                height: 3px;
+                visibility: visible;
+                border-radius: 10px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                display: flex;
+                flex-direction: column;
+                z-index: 20;
+                animation: pop-in 0.5s ease-out forwards;
+                transform: scale(0);
+                opacity: 0;
+            `;
+
+            const discordCloseButton = document.createElement('button');
+            discordCloseButton.textContent = '✖';
+            discordCloseButton.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: transparent;
+                border: none;
+                color: white;
+                border-radius: 5px;
+                padding: 5px, 10px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                outline: none;
+                transition: transform 0.2s ease, background-color 0.3s ease;
+            `;
+
+            discordCloseButton.addEventListener('click', () => {
+                closeSound.volume = 0.3;
+                closeSound.currentTime = 0;
+                closeSound.play();
+                discordWindow.style.animation = 'pop-out 0.5s ease-out forwards';
+                setTimeout(() => {
+                    discordWindow.remove();
+                }, 500);
+            });
+
+            const discordTitleBar = document.createElement('div');
+            discordTitleBar.className = 'window-title';
+            discordTitleBar.textContent = 'Discord Info';
+            discordTitleBar.style.cssText = `
+                background-color: rgb(88, 83, 86);
+                color: white;
+                padding: 10px 16px;
+                font-weight: bold;
+                font-size: 1.2rem;
+                cursor: default;
+                user-select: none;
+            `;
+
+            const discordBodyContent = document.createElement('div');
+            discordBodyContent.className = 'window-body';
+            discordBodyContent.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                padding: 20px;
+            `;
+            discordBodyContent.innerHTML = `
+                <div class="main-text" style="font-size: 1.5rem;">my ONLY discord account is @carolinekks</div>
+                <div class="sub-text" style="font-size: 1.3rem;">any other accounts are impersonations</div>
+            `;
+
+            discordWindow.appendChild(discordCloseButton);
+            discordWindow.appendChild(discordTitleBar);
+            discordWindow.appendChild(discordBodyContent);
+            document.body.appendChild(discordWindow);
+
+            makeDraggable(discordWindow);
+        });
 
         steamButton.addEventListener('mouseover', () => {
           steamButton.style.transform = 'scale(1.1)';
@@ -1057,6 +1195,21 @@
             window.open('https://steamcommunity.com/id/puppygirly/', '_blank');
         });
 
+        discordButton.addEventListener('mouseover', () => {
+            discordButton.style.transform = 'scale(1.1)';
+            discordImg.style.transform = 'scale(1.05)';
+        });
+
+        discordButton.addEventListener('mouseout', () => {
+            discordButton.style.transform = 'scale(1)';
+            discordImg.style.transform = 'scale(1)';
+        });
+
+        discordButton.addEventListener('mousedown', () => {
+            discordButton.style.transform = 'scale(1)';
+            discordImg.style.transform = 'scale(1)';
+        });
+
         const infoText = document.createElement('div');
         infoText.className = 'sub-text';
         infoText.textContent = '[ all buttons here will open up a new tab ]';
@@ -1064,6 +1217,7 @@
 
         bodyContent.appendChild(steamContainer);
         bodyContent.appendChild(steamContainer2);
+        bodyContent.appendChild(discordContainer);
         bodyContent.appendChild(infoText);
 
         newBlock.appendChild(closeButton);
