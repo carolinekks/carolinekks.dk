@@ -1,2 +1,2 @@
 Rails.application.config.assets.version = "1.0"
-Rails.application.config.assets.precompile += %w( lightdark.mp3 )
+Rails.application.config.assets.precompile += %w[lightdark.mp3]
