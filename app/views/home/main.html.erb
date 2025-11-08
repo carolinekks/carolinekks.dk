@@ -71,7 +71,7 @@
     }
 
     .button-text {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: black;
       margin-top: 5px;
       transition: color 0.3s ease;
@@ -135,14 +135,16 @@
     .wave1 .wave-wrapper {
       animation-name: wave-scroll;
       animation-duration: 12s;
-      color: #ff7f91cc;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
       z-index: 3;
     }
 
     .wave2 .wave-wrapper {
       animation-name: wave-scroll-reverse;
       animation-duration: 18s;
-      color: #ffa1b899;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
       bottom: 100px;
       z-index: 2;
     }
@@ -150,7 +152,8 @@
     .wave3 .wave-wrapper {
       animation-name: wave-scroll;
       animation-duration: 24s;
-      color: #ff4c6dcc;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
       bottom: 20px;
       z-index: 1;
     }
@@ -159,11 +162,40 @@
       flex-shrink: 0;
       width: 50%;
       height: 1000px;
-      fill: currentColor;
+    }
+
+    .wave1 path {
+      fill: #ff7f91;
+      opacity: 0.5;
+    }
+
+    .wave2 path {
+      fill: #ffa1b8;
+      opacity: 0.35;
+    }
+
+    .wave3 path {
+      fill: #ff4c6d;
+      opacity: 0.4;
+    }
+
+    body.dark-mode .wave1 path {
+      fill: #6a4a82;
+      opacity: 0.6;
+    }
+
+    body.dark-mode .wave2 path {
+      fill: #8e6aa9;
+      opacity: 0.4;
+    }
+
+    body.dark-mode .wave3 path {
+      fill: #5c3e6a;
+      opacity: 0.5;
     }
 
     @keyframes wave-scroll {
-      0% { transform: translateX(0); } // TRANS ??? LATEX ?? MMMFGH..,
+      0% { transform: translateX(0); } /* TRANS ??? LATEX ??? MMMFGH.., */
       100% { transform: translateX(-50%); }
     }
     @keyframes wave-scroll-reverse {
@@ -492,7 +524,7 @@
       <div class="body-content">
         <div class="main-text">Hellooo I'm Caroline! ^ω^</div>
         <div class="sub-text">girlfailure, puppy, and a professional idiot</div>
-        <div class="sub-text">(im ballin beyond belief)</div>
+        <div class="sub-text">(im baller beyond belief)</div>
       </div>
       <button class="about-me-btn" aria-label="About me">
         <%= image_tag "aboutme.svg", class: "aboutme-icon" %>
@@ -1297,7 +1329,7 @@
           newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
           setTimeout(() => {
             newBlock.remove();
-            projectsBlock = null;
+            changelogBlock = null;
           }, 500);
         });
 
@@ -1326,107 +1358,430 @@
         document.body.appendChild(newBlock);
 
         makeDraggable(newBlock);
-        projectsBlock = newBlock;
+        changelogBlock = newBlock;
       }
 
-      function handleChangelogClick() {
-        buttonClickSound.volume = 0.3;
-        buttonClickSound.currentTime = 0;
-        buttonClickSound.play();
-        if (changelogBlock) return;
+            async function handleChangelogClick() {
+          buttonClickSound.volume = 0.3;
+          buttonClickSound.currentTime = 0;
+          buttonClickSound.play();
+          if (changelogBlock) return;
 
-        const newBlock = document.createElement('div');
-        newBlock.className = 'window changelog';
-        newBlock.style.cssText = `
-          position: absolute; 
-          left: ${Math.random() * 50}vw; 
-          top: ${Math.random() * 30}vh; 
-          width: 1000px; 
-          height: 600px; 
-          visibility: visible; 
-          border-radius: 10px; 
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-          display: flex; 
-          flex-direction: column;
-          z-index: 10;
-          animation: pop-in 0.5s ease-out forwards;
-          transform: scale(0);
-          opacity: 0;
-        `;
+          const newBlock = document.createElement('div');
+          newBlock.className = 'window changelog';
+          newBlock.style.cssText = `
+              position: absolute; 
+              left: ${Math.random() * 50}vw; 
+              top: ${Math.random() * 30}vh; 
+              width: 1000px; 
+              height: 600px; 
+              visibility: visible; 
+              border-radius: 10px; 
+              box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+              display: flex; 
+              flex-direction: column;
+              z-index: 10;
+              animation: pop-in 0.5s ease-out forwards;
+              transform: scale(0);
+              opacity: 0;
+          `;
 
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '✖';
-        closeButton.style.cssText = `
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: transparent;
-          border: none;
-          color: white;
-          border-radius: 5px;
-          padding: 5px, 10px;
-          cursor: pointer;
-          font-size: 1.2rem;
-          outline: none;
-          transition: transform 0.2s ease, background-color 0.3s ease;
-        `;
+          const closeButton = document.createElement('button');
+          closeButton.textContent = '✖';
+          closeButton.style.cssText = `
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background: transparent;
+              border: none;
+              color: white;
+              border-radius: 5px;
+              padding: 5px, 10px;
+              cursor: pointer;
+              font-size: 1.2rem;
+              outline: none;
+              transition: transform 0.2s ease, background-color 0.3s ease;
+          `;
 
-        closeButton.addEventListener('mouseover', () => {
-          closeButton.style.transform = 'scale(1.2)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
+          closeButton.addEventListener('mouseover', () => {
+              closeButton.style.transform = 'scale(1.2)';
+              closeButton.style.backgroundColor = 'transparent';
+          });
 
-        closeButton.addEventListener('mouseout', () => {
-          closeButton.style.transform = 'scale(1)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
+          closeButton.addEventListener('mouseout', () => {
+              closeButton.style.transform = 'scale(1)';
+              closeButton.style.backgroundColor = 'transparent';
+          });
 
-        closeButton.addEventListener('mousedown', () => {
-          closeButton.style.transform = 'scale(0.8)';
-        });
+          closeButton.addEventListener('mousedown', () => {
+              closeButton.style.transform = 'scale(0.8)';
+          });
 
-        closeButton.addEventListener('mouseup', () => {
-          closeButton.style.transform = 'scale(1)';
-        });
+          closeButton.addEventListener('mouseup', () => {
+              closeButton.style.transform = 'scale(1)';
+          });
 
+          const titleBar = document.createElement('div');
+          titleBar.className = 'window-title';
+          titleBar.textContent = 'Changelog~';
+          titleBar.style.cssText = `
+              background-color: rgb(88, 83, 86); 
+              color: white; 
+              padding: 10px 16px; 
+              font-weight: bold; 
+              font-size: 1.2rem; 
+              cursor: default; 
+              user-select: none;
+          `;
 
-        closeButton.addEventListener('click', () => {
-          closeSound.volume = 0.3;
-          closeSound.currentTime = 0;
-          closeSound.play();
-          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
-          setTimeout(() => {
-            newBlock.remove();
-            projectsBlock = null;
-          }, 500);
-        });
+          const bodyContent = document.createElement('div');
+          bodyContent.className = 'window-body';
+          bodyContent.style.cssText = `
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              padding: 20px;
+              overflow-y: auto;
+              text-align: left;
+              max-height: 500px;
+          `;
 
-        const titleBar = document.createElement('div');
-        titleBar.className = 'window-title';
-        titleBar.textContent = 'Changelog~';
-        titleBar.style.cssText = `
-          background-color: rgb(88, 83, 86); 
-          color: white; 
-          padding: 10px 16px; 
-          font-weight: bold; 
-          font-size: 1.2rem; 
-          cursor: default; 
-          user-select: none;
-        `;
+          const loadingMessage = document.createElement('div');
+          loadingMessage.textContent = 'Loading changelog from GitHub...';
+          loadingMessage.style.cssText = `
+              text-align: center;
+              width: 100%;
+              padding: 20px;
+              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+          `;
+          bodyContent.appendChild(loadingMessage);
 
-        const bodyContent = document.createElement('div');
-        bodyContent.className = 'window-body';
-        bodyContent.innerHTML = `
-          <div class="main-text">Coming soon!~</div>
-        `;
+          const changelogId = `changelog-${Date.now()}`;
+          newBlock.id = changelogId;
 
-        newBlock.appendChild(closeButton);
-        newBlock.appendChild(titleBar);
-        newBlock.appendChild(bodyContent);
-        document.body.appendChild(newBlock);
+          const style = document.createElement('style');
+          style.textContent = generateChangelogStyles(changelogId, document.body.classList.contains('dark-mode'));
+          newBlock.appendChild(style);
 
-        makeDraggable(newBlock);
-        projectsBlock = newBlock;
+          newBlock.appendChild(closeButton);
+          newBlock.appendChild(titleBar);
+          newBlock.appendChild(bodyContent);
+          document.body.appendChild(newBlock);
+
+          makeDraggable(newBlock);
+          changelogBlock = newBlock;
+
+          try {
+              const commits = await fetchGitHubCommits();
+              bodyContent.removeChild(loadingMessage);
+              renderChangelogItems(bodyContent, commits, changelogId);
+          } catch (error) {
+              console.error('Error fetching GitHub commits:', error);
+              loadingMessage.textContent = 'Failed to load changelog. Showing static data...';
+              renderStaticChangelog(bodyContent, changelogId);
+          }
+
+          const darkModeObserver = new MutationObserver(() => {
+              style.textContent = generateChangelogStyles(changelogId, document.body.classList.contains('dark-mode'));
+          });
+          darkModeObserver.observe(document.body, {
+              attributes: true,
+              attributeFilter: ['class']
+          });
+
+          closeButton.addEventListener('click', () => {
+              darkModeObserver.disconnect();
+              closeSound.volume = 0.3;
+              closeSound.currentTime = 0;
+              closeSound.play();
+              newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+              setTimeout(() => {
+                  newBlock.remove();
+                  changelogBlock = null;
+              }, 500);
+          });
+      }
+
+      async function fetchGitHubCommits() {
+          const username = 'carolinekks';
+          const repo = 'carolinekks.dk';
+          const url = `https://api.github.com/repos/${username}/${repo}/commits`;
+
+          const response = await fetch(url);
+          if (!response.ok) {
+              throw new Error('Failed to fetch commits');
+          }
+
+          const commits = await response.json();
+          
+          return commits.map(commit => {
+              const commitDate = new Date(commit.commit.author.date);
+              const formattedDate = commitDate.toISOString().split('T')[0];
+              
+              return {
+                  date: formattedDate,
+                  title: commit.commit.message.split('\n')[0],
+                  details: commit.commit.message.split('\n').slice(1).filter(line => line.trim()),
+                  sha: commit.sha.substring(0, 7),
+                  url: commit.html_url
+              };
+          });
+      }
+
+      function renderChangelogItems(container, commits, changelogId) {
+          commits.forEach(commit => {
+              const itemElement = createChangelogItem(commit, changelogId);
+              container.appendChild(itemElement);
+          });
+      }
+
+      function createChangelogItem(commit, changelogId) {
+          const itemElement = document.createElement('div');
+          itemElement.className = 'changelog-item';
+          
+          const header = document.createElement('div');
+          header.className = 'changelog-header';
+
+          const dateSpan = document.createElement('span');
+          dateSpan.className = 'changelog-date';
+          dateSpan.textContent = commit.date;
+
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'changelog-title';
+          titleSpan.textContent = commit.title;
+
+          let shaSpan = null;
+          if (commit.sha) {
+              shaSpan = document.createElement('span');
+              shaSpan.className = 'changelog-sha';
+              shaSpan.textContent = commit.sha;
+          }
+
+          header.appendChild(dateSpan);
+          header.appendChild(titleSpan);
+          if (shaSpan) {
+              header.appendChild(shaSpan);
+          }
+          
+          const content = document.createElement('div');
+          content.className = 'changelog-content';
+          
+          const detailsList = document.createElement('ul');
+          detailsList.className = 'changelog-details';
+          
+          if (commit.details && commit.details.length > 0) {
+              commit.details.forEach(detail => {
+                  if (detail.trim()) {
+                      const li = document.createElement('li');
+                      li.textContent = detail.trim();
+                      detailsList.appendChild(li);
+                  }
+              });
+          } else {
+              const li = document.createElement('li');
+              li.textContent = 'No additional details';
+              li.style.opacity = '0.6';
+              detailsList.appendChild(li);
+          }
+          
+          if (commit.url) {
+              const linkItem = document.createElement('li');
+              const link = document.createElement('a');
+              link.href = commit.url;
+              link.target = '_blank';
+              link.textContent = 'View on GitHub →';
+              linkItem.appendChild(link);
+              detailsList.appendChild(linkItem);
+          }
+          
+          content.appendChild(detailsList);
+          
+          header.addEventListener('click', () => {
+              buttonClickSound.volume = 0.2;
+              buttonClickSound.currentTime = 0;
+              buttonClickSound.play();
+
+              document.querySelectorAll(`#${changelogId} .changelog-content.open`).forEach(openContent => {
+                  if (openContent !== content) {
+                      openContent.classList.remove('open');
+                      openContent.previousElementSibling.classList.remove('open');
+                  }
+              });
+                  
+              header.classList.toggle('open');
+              content.classList.toggle('open');
+          });
+          
+          itemElement.appendChild(header);
+          itemElement.appendChild(content);
+          
+          return itemElement;
+      }
+
+      function generateChangelogStyles(changelogId, isDarkMode) {
+          return `
+              #${changelogId} .changelog-item {
+                  width: 95%;
+                  margin: 20px auto;
+                  border-radius: 8px;
+                  overflow: hidden;
+                  transition: all 0.3s ease;
+                  border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+              }
+              
+              #${changelogId} .changelog-item + .changelog-item {
+                  margin-top: 20px;
+              }
+
+              #${changelogId} .changelog-header,
+              #${changelogId} .changelog-content {
+                  display: block;
+                  width: 100%;
+              }
+
+              #${changelogId} .changelog-content.open {
+                  max-height: none;
+              }
+
+                            
+              #${changelogId} .changelog-header {
+                  display: block;
+                  padding: 20px;
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};
+                  cursor: pointer;
+                  user-select: none;
+                  transition: all 0.3s ease;
+                  width: 100%;
+                  box-sizing: border-box;
+              }
+              
+              #${changelogId} .changelog-header:hover {
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)'};
+              }
+              
+              #${changelogId} .changelog-header::before {
+                  content: '▶';
+                  display: inline-block;
+                  margin-right: 12px;
+                  font-size: 0.9em;
+                  transition: transform 0.3s ease;
+                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                  vertical-align: middle;
+              }
+              
+              #${changelogId} .changelog-header.open::before {
+                  transform: rotate(90deg);
+              }
+              
+              #${changelogId} .changelog-content {
+                  max-height: 0;
+                  overflow: hidden;
+                  padding: 0 20px;
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'};
+                  transition: all 0.3s ease;
+                  box-sizing: border-box;
+                  width: 100%;
+              }
+              
+              #${changelogId} .changelog-content.open {
+                  max-height: 500px;
+                  padding: 25px;
+                  overflow-y: auto;
+              }
+              
+              #${changelogId} .changelog-date {
+                  font-weight: bold;
+                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                  font-size: 1.1rem;
+                  display: block;
+                  margin-bottom: 8px;
+              }
+              
+              #${changelogId} .changelog-title {
+                  text-align: left;
+                  font-size: 1.2rem;
+                  line-height: 1.5;
+                  display: block;
+                  margin-bottom: 8px;
+                  font-weight: 600;
+              }
+              
+              #${changelogId} .changelog-sha {
+                  font-family: monospace;
+                  background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                  padding: 6px 10px;
+                  border-radius: 4px;
+                  font-size: 0.9rem;
+                  display: inline-block;
+                  margin-top: 5px;
+              }
+              
+              #${changelogId} .changelog-details {
+                  margin-top: 15px;
+                  padding-left: 0;
+                  list-style-type: none;
+                  width: 100%;
+              }
+              
+              #${changelogId} .changelog-details li {
+                  margin-bottom: 12px;
+                  position: relative;
+                  padding-left: 24px;
+                  text-align: left;
+                  word-wrap: break-word;
+                  font-size: 1.1rem;
+                  line-height: 1.6;
+              }
+              
+              #${changelogId} .changelog-details li::before {
+                  content: '•';
+                  position: absolute;
+                  left: 8px;
+                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                  font-size: 1.4em;
+                  font-weight: bold;
+              }
+
+              #${changelogId} .window-body {
+                  display: block !important;
+                  overflow-y: auto !important;
+                  height: 500px !important;
+                  max-height: 500px !important;
+                  padding: 25px !important;
+                  text-align: left !important;
+              }
+
+              #${changelogId} a {
+                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'} !important;
+                  text-decoration: none;
+                  font-weight: bold;
+                  padding: 4px 8px;
+                  border-radius: 3px;
+                  background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                  display: inline-block;
+                  margin-top: 5px;
+              }
+
+              #${changelogId} a:hover {
+                  text-decoration: underline;
+                  background: ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'};
+              }
+          `;
+      }
+
+      function renderStaticChangelog(container, changelogId) {
+          const staticData = [
+              {
+                  date: "2025-05-19",
+                  title: "Preproduction push",
+                  details: ["First push to github"]
+              },
+          ];
+          
+          staticData.forEach(item => {
+              const itemElement = createChangelogItem(item, changelogId);
+              container.appendChild(itemElement);
+          });
       }
 
       aboutmeBtn.addEventListener('click', handleAboutMeClick); 
