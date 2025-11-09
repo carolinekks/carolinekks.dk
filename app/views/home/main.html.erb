@@ -730,6 +730,16 @@
         });
       }
 
+      function positionWindowRandomly(el, width = 800, height = 500) {
+        el.style.position = "absolute";
+        const maxX = Math.max(0, window.innerWidth - width);
+        const maxY = Math.max(0, window.innerHeight - height);
+        const randomLeft = Math.floor(Math.random() * maxX);
+        const randomTop  = Math.floor(Math.random() * maxY);
+        el.style.left = randomLeft + "px";
+        el.style.top  = randomTop + "px";
+      }
+
       function handleAboutMeClick() {
         buttonClickSound.volume = 0.3;
         buttonClickSound.currentTime = 0;
@@ -740,8 +750,6 @@
         newBlock.className = 'window about-me';
         newBlock.style.cssText = `
           position: absolute; 
-          left: ${Math.random() * 50}vw; 
-          top: ${Math.random() * 30}vh; 
           width: 1000px; 
           height: 600px; 
           visibility: visible; 
@@ -834,9 +842,8 @@
         newBlock.appendChild(titleBar);
         newBlock.appendChild(bodyContent);
         document.body.appendChild(newBlock);
-
+        positionWindowRandomly(newBlock, 1000, 600);
         makeDraggable(newBlock);
-        existingBlock = newBlock;
       }
 
       function handleSocialsClick() {
@@ -849,8 +856,6 @@
         newBlock.className = 'window socials';
         newBlock.style.cssText = `
           position: absolute; 
-          left: ${Math.random() * 50}vw; 
-          top: ${Math.random() * 30}vh; 
           width: 1000px; 
           height: 600px; 
           visibility: visible; 
@@ -1104,8 +1109,8 @@
             discordWindow.className = 'window discord-info';
             discordWindow.style.cssText = `
                 position: absolute;
-                left: ${Math.random() * 50}vw;
-                top: ${Math.random() * 30}vh;
+                left: ${Math.random() * (window.innerWidth - 1920)}px;
+                top: ${Math.random() * (window.innerHeight - 1080)}px;
                 width: 700px;
                 height: 3px;
                 visibility: visible;
@@ -1256,9 +1261,8 @@
         newBlock.appendChild(titleBar);
         newBlock.appendChild(bodyContent);
         document.body.appendChild(newBlock);
-
+        positionWindowRandomly(newBlock, 1000, 600);
         makeDraggable(newBlock);
-        socialsBlock = newBlock;
       }
 
       function handleGalleryClick() {
@@ -1271,8 +1275,6 @@
         newBlock.className = 'window gallery';
         newBlock.style.cssText = `
           position: absolute; 
-          left: ${Math.random() * 50}vw; 
-          top: ${Math.random() * 30}vh; 
           width: 1000px; 
           height: 600px; 
           visibility: visible; 
@@ -1356,12 +1358,11 @@
         newBlock.appendChild(titleBar);
         newBlock.appendChild(bodyContent);
         document.body.appendChild(newBlock);
-
+        positionWindowRandomly(newBlock, 1000, 600);
         makeDraggable(newBlock);
-        changelogBlock = newBlock;
-      }
+        }
 
-            async function handleChangelogClick() {
+        async function handleChangelogClick() {
           buttonClickSound.volume = 0.3;
           buttonClickSound.currentTime = 0;
           buttonClickSound.play();
@@ -1370,20 +1371,18 @@
           const newBlock = document.createElement('div');
           newBlock.className = 'window changelog';
           newBlock.style.cssText = `
-              position: absolute; 
-              left: ${Math.random() * 50}vw; 
-              top: ${Math.random() * 30}vh; 
-              width: 1000px; 
-              height: 600px; 
-              visibility: visible; 
-              border-radius: 10px; 
-              box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-              display: flex; 
-              flex-direction: column;
-              z-index: 10;
-              animation: pop-in 0.5s ease-out forwards;
-              transform: scale(0);
-              opacity: 0;
+            position: absolute; 
+            width: 1000px; 
+            height: 600px; 
+            visibility: visible; 
+            border-radius: 10px; 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+            display: flex; 
+            flex-direction: column;
+            z-index: 10;
+            animation: pop-in 0.5s ease-out forwards;
+            transform: scale(0);
+            opacity: 0;
           `;
 
           const closeButton = document.createElement('button');
@@ -1467,9 +1466,8 @@
           newBlock.appendChild(titleBar);
           newBlock.appendChild(bodyContent);
           document.body.appendChild(newBlock);
-
+          positionWindowRandomly(newBlock, 1000, 600);
           makeDraggable(newBlock);
-          changelogBlock = newBlock;
 
           try {
               const commits = await fetchGitHubCommits();
@@ -1628,15 +1626,17 @@
                   transition: all 0.3s ease;
                   border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
               }
-              
+
               #${changelogId} .changelog-item + .changelog-item {
                   margin-top: 20px;
               }
 
-              #${changelogId} .changelog-header,
-              #${changelogId} .changelog-content {
-                  display: block;
-                  width: 100%;
+              #${changelogId} .changelog-date,
+              #${changelogId} .changelog-title,
+              #${changelogId} .changelog-sha {
+                display: inline;
+                margin: 0;
+                line-height: 1.4;
               }
 
               #${changelogId} .changelog-content.open {
@@ -1645,14 +1645,18 @@
 
                             
               #${changelogId} .changelog-header {
-                  display: block;
-                  padding: 20px;
-                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};
-                  cursor: pointer;
-                  user-select: none;
-                  transition: all 0.3s ease;
-                  width: 100%;
-                  box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+                padding: 15px 20px;
+                background-color: ${isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};
+                cursor: pointer;
+                user-select: none;
+                transition: all 0.3s ease;
+                width: 100%;
+                box-sizing: border-box;
+                flex-wrap: wrap;
               }
               
               #${changelogId} .changelog-header:hover {
@@ -1690,30 +1694,25 @@
               }
               
               #${changelogId} .changelog-date {
-                  font-weight: bold;
-                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
-                  font-size: 1.1rem;
-                  display: block;
-                  margin-bottom: 8px;
+                font-weight: 600;
+                color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                min-width: 120px;
               }
               
               #${changelogId} .changelog-title {
-                  text-align: left;
-                  font-size: 1.2rem;
-                  line-height: 1.5;
-                  display: block;
-                  margin-bottom: 8px;
-                  font-weight: 600;
+                flex-grow: 1;
+                text-align: left;
+                font-weight: 600;
+                font-size: 1.1rem;
+                color: inherit;
               }
-              
+
               #${changelogId} .changelog-sha {
-                  font-family: monospace;
-                  background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
-                  padding: 6px 10px;
-                  border-radius: 4px;
-                  font-size: 0.9rem;
-                  display: inline-block;
-                  margin-top: 5px;
+                font-family: monospace;
+                background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.9rem;
               }
               
               #${changelogId} .changelog-details {
