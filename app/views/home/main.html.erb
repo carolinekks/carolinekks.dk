@@ -483,6 +483,33 @@
       opacity: 1;
       transform: translateX(0);
     }
+
+    .window, .about-me {
+        will-change: transform;
+        contain: layout style paint;
+    }
+
+    .waves-container {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000;
+    }
+
+    .sparkle {
+        will-change: opacity;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        .wave-wrapper {
+            animation: none !important;
+        }
+    }
   </style>
 </head>
 <body>
@@ -1750,27 +1777,77 @@
       async function fetchGitHubCommits() {
           const username = 'carolinekks';
           const repo = 'carolinekks.dk';
-          const url = `https://api.github.com/repos/${username}/${repo}/commits`;
-
-          const response = await fetch(url);
-          if (!response.ok) {
-              throw new Error('Failed to fetch commits');
-          }
-
-          const commits = await response.json();
+          const commitsUrl = `https://api.github.com/repos/${username}/${repo}/commits?per_page=20`;
           
-          return commits.map(commit => {
-              const commitDate = new Date(commit.commit.author.date);
-              const formattedDate = commitDate.toISOString().split('T')[0];
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          
+          try {
+              const commitsResponse = await fetch(commitsUrl, {
+                  signal: controller.signal,
+                  headers: {
+                      'Accept': 'application/vnd.github.v3+json'
+                  }
+              });
               
-              return {
-                  date: formattedDate,
-                  title: commit.commit.message.split('\n')[0],
-                  details: commit.commit.message.split('\n').slice(1).filter(line => line.trim()),
-                  sha: commit.sha.substring(0, 7),
-                  url: commit.html_url
-              };
-          });
+              if (!commitsResponse.ok) {
+                  throw new Error(`GitHub API error: ${commitsResponse.status}`);
+              }
+
+              const commits = await commitsResponse.json();
+
+              const detailedCommits = await Promise.all(
+                  commits.slice(0, 10).map(async (commit) => { /* Limit to 10 */
+                      try {
+                          const commitUrl = `https://api.github.com/repos/${username}/${repo}/commits/${commit.sha}`;
+                          const detailResponse = await fetch(commitUrl, {
+                              signal: controller.signal
+                          });
+                          
+                          if (detailResponse.ok) {
+                              const commitDetail = await detailResponse.json();
+                              return {
+                                  ...commit,
+                                  stats: commitDetail.stats || { additions: 0, deletions: 0, total: 0 }
+                              };
+                          }
+                      } catch (error) {
+                          console.warn(`Failed to fetch details for commit ${commit.sha}:`, error);
+                      }
+
+                      return {
+                          ...commit,
+                          stats: { additions: 0, deletions: 0, total: 0 }
+                      };
+                  })
+              );
+              
+              clearTimeout(timeoutId);
+              
+              return detailedCommits.map(commit => {
+                  const commitDate = new Date(commit.commit.author.date);
+                  const formattedDate = commitDate.toISOString().split('T')[0];
+                  
+                  const sanitizeText = (text) => {
+                      return text ? text.replace(/[<>]/g, '') : '';
+                  };
+                  
+                  return {
+                      date: formattedDate,
+                      title: sanitizeText(commit.commit.message.split('\n')[0] || 'No title'),
+                      details: commit.commit.message.split('\n').slice(1)
+                          .filter(line => line.trim())
+                          .map(line => sanitizeText(line)),
+                      sha: commit.sha ? commit.sha.substring(0, 7) : 'unknown',
+                      url: commit.html_url || '#',
+                      stats: commit.stats || { additions: 0, deletions: 0, total: 0 }
+                  };
+              });
+              
+          } catch (error) {
+              clearTimeout(timeoutId);
+              throw error;
+          }
       }
 
       function renderChangelogItems(container, commits, changelogId) {
@@ -1795,6 +1872,19 @@
           titleSpan.className = 'changelog-title';
           titleSpan.textContent = commit.title;
 
+          const changesSpan = document.createElement('span');
+          changesSpan.className = 'changelog-changes';
+          
+          if (commit.stats && (commit.stats.additions > 0 || commit.stats.deletions > 0)) {
+              changesSpan.innerHTML = `
+                  <span class="changes-additions">+${commit.stats.additions}</span>
+                  <span class="changes-deletions">-${commit.stats.deletions}</span>
+                  <span class="changes-total">${commit.stats.total} lines</span>
+              `;
+          } else {
+              changesSpan.innerHTML = '<span class="changes-total">No changes</span>';
+          }
+
           let shaSpan = null;
           if (commit.sha) {
               shaSpan = document.createElement('span');
@@ -1804,6 +1894,7 @@
 
           header.appendChild(dateSpan);
           header.appendChild(titleSpan);
+          header.appendChild(changesSpan);
           if (shaSpan) {
               header.appendChild(shaSpan);
           }
@@ -1834,6 +1925,7 @@
               const link = document.createElement('a');
               link.href = commit.url;
               link.target = '_blank';
+              link.rel = 'noopener noreferrer';
               link.textContent = 'View on GitHub →';
               linkItem.appendChild(link);
               detailsList.appendChild(linkItem);
@@ -2012,6 +2104,28 @@
                   text-decoration: underline;
                   background: ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'};
               }
+              #${changelogId} .changelog-changes {
+                  display: flex;
+                  gap: 8px;
+                  align-items: center;
+                  font-family: monospace;
+                  font-size: 0.85rem;
+              }
+              
+              #${changelogId} .changes-additions {
+                  color: #3fb950;
+                  font-weight: bold;
+              }
+              
+              #${changelogId} .changes-deletions {
+                  color: #f85149;
+                  font-weight: bold;
+              }
+              
+              #${changelogId} .changes-total {
+                  color: ${isDarkMode ? '#8b949e' : '#656d76'};
+                  margin-left: 4px;
+              }
           `;
       }
 
@@ -2056,6 +2170,28 @@
 
       for (let i = 0; i < NUM_SPARKLES; i++) {
         createSparkle();
+      }
+
+      function cleanupResources() {
+          const existingWindows = document.querySelectorAll('.window.about-me, .window.socials, .window.gallery, .window.changelog');
+          existingWindows.forEach(window => {
+              if (!window.parentElement) {
+                  const observers = window._observers || [];
+                  observers.forEach(observer => observer.disconnect());
+              }
+          });
+      }
+
+      function setupWindowCleanup(windowElement) {
+          const closeBtn = windowElement.querySelector('button');
+          const originalClickHandler = closeBtn.onclick;
+          
+          closeBtn.onclick = function(e) {
+              cleanupResources();
+              if (originalClickHandler) {
+                  originalClickHandler.call(this, e);
+              }
+          };
       }
     });
   </script>
