@@ -5,6 +5,10 @@
   <title>MY WEBSITE :3333</title>
 
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="audio" href="<%= asset_path 'click.mp3' %>">
+  <link rel="preload" as="audio" href="<%= asset_path 'close.mp3' %>">
+  <link rel="preload" as="audio" href="<%= asset_path 'light.mp3' %>">
+  <link rel="preload" as="audio" href="<%= asset_path 'dark.mp3' %>">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"></noscript>
 
   <style>
@@ -807,6 +811,9 @@
             newBlock.remove();
             existingBlock = null;
           }, 500);
+          newBlock.querySelectorAll('*').forEach(el => {
+            el.replaceWith(el.cloneNode(true));
+          });
         });
 
         const titleBar = document.createElement('div');
@@ -915,6 +922,9 @@
             newBlock.remove();
             socialsBlock = null;
           }, 500);
+          newBlock.querySelectorAll('*').forEach(el => {
+            el.replaceWith(el.cloneNode(true));
+          });
         });
 
         const titleBar = document.createElement('div');
@@ -948,7 +958,7 @@
             flex-direction: column;
             align-items: center;
             position: absolute;
-            top: 100px;
+            top: 80px;
             left: 20%;
             transform: translateX(-50%);
             z-index: 1;
@@ -991,7 +1001,7 @@
             flex-direction: column;
             align-items: center;
             position: absolute;
-            top: 100px;
+            top: 80px;
             left: 80%;
             transform: translateX(-50%); 
             z-index: 1;
@@ -1034,7 +1044,7 @@
             flex-direction: column;
             align-items: center;
             position: absolute;
-            top: 250px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
@@ -1071,10 +1081,142 @@
             transition: color 0.3s ease;
         `;
 
+        const lastfmContainer = document.createElement('div');
+        lastfmContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 270px;
+            left: 20%;
+            transform: translateX(-50%);
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const lastfmButton = document.createElement('button');
+        lastfmButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+        `;
+
+        const lastfmImg = document.createElement('img');
+        lastfmImg.src = '<%= asset_path "lastfm.webp" %>';
+        lastfmImg.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        `;
+
+        const lastfmText = document.createElement('div');
+        lastfmText.textContent = 'Last.fm';
+        lastfmText.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
+        const instagramContainer = document.createElement('div');
+        instagramContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 270px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const instagramButton = document.createElement('button');
+        instagramButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+        `;
+
+        const instagramImg = document.createElement('img');
+        instagramImg.src = '<%= asset_path "insta.webp" %>';
+        instagramImg.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        `;
+
+        const instagramText = document.createElement('div');
+        instagramText.textContent = 'Instagram';
+        instagramText.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
+        const githubContainer = document.createElement('div');
+        githubContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 270px;
+            left: 80%;
+            transform: translateX(-50%);
+            z-index: 1;
+            gap: 10px;
+        `;
+
+        const githubButton = document.createElement('button');
+        githubButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+        `;
+
+        const githubImg = document.createElement('img');
+        githubImg.src = '<%= asset_path "github.webp" %>';
+        githubImg.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        `;
+
+        const githubText = document.createElement('div');
+        githubText.textContent = 'GitHub';
+        githubText.style.cssText = `
+            color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        `;
+
         const darkModeObserver = new MutationObserver(() => {
             steamText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             steamText2.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             discordText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            lastfmText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            instagramText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            githubText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
         });
 
         darkModeObserver.observe(document.body, {
@@ -1086,6 +1228,9 @@
             steamText.style.color = 'white';
             steamText2.style.color = 'white';
             discordText.style.color = 'white';
+            lastfmText.style.color = 'white';
+            instagramText.style.color = 'white';
+            githubText.style.color = 'white';
         }
 
         steamButton.appendChild(steamImg);
@@ -1099,6 +1244,18 @@
         discordButton.appendChild(discordImg);
         discordContainer.appendChild(discordButton);
         discordContainer.appendChild(discordText);
+
+        lastfmButton.appendChild(lastfmImg);
+        lastfmContainer.appendChild(lastfmButton);
+        lastfmContainer.appendChild(lastfmText);
+
+        instagramButton.appendChild(instagramImg);
+        instagramContainer.appendChild(instagramButton);
+        instagramContainer.appendChild(instagramText);
+
+        githubButton.appendChild(githubImg);
+        githubContainer.appendChild(githubButton);
+        githubContainer.appendChild(githubText);
 
         discordButton.addEventListener('click', () => {
             buttonClickSound.volume = 0.3;
@@ -1142,13 +1299,13 @@
             `;
 
             discordCloseButton.addEventListener('click', () => {
-                closeSound.volume = 0.3;
-                closeSound.currentTime = 0;
-                closeSound.play();
-                discordWindow.style.animation = 'pop-out 0.5s ease-out forwards';
-                setTimeout(() => {
-                    discordWindow.remove();
-                }, 500);
+              closeSound.volume = 0.3;
+              closeSound.currentTime = 0;
+              closeSound.play();
+              discordWindow.style.animation = 'pop-out 0.5s ease-out forwards';
+              setTimeout(() => {
+                  discordWindow.remove();
+              }, 500);
             });
 
             const discordTitleBar = document.createElement('div');
@@ -1183,7 +1340,7 @@
             discordWindow.appendChild(discordTitleBar);
             discordWindow.appendChild(discordBodyContent);
             document.body.appendChild(discordWindow);
-
+            positionWindowRandomly(discordWindow, 700, 300);
             makeDraggable(discordWindow);
         });
 
@@ -1247,6 +1404,72 @@
             discordImg.style.transform = 'scale(1)';
         });
 
+        lastfmButton.addEventListener('mouseover', () => {
+            lastfmButton.style.transform = 'scale(1.1)';
+            lastfmImg.style.transform = 'scale(1.05)';
+        });
+
+        lastfmButton.addEventListener('mouseout', () => {
+            lastfmButton.style.transform = 'scale(1)';
+            lastfmImg.style.transform = 'scale(1)';
+        });
+
+        lastfmButton.addEventListener('mousedown', () => {
+            lastfmButton.style.transform = 'scale(1)';
+            lastfmImg.style.transform = 'scale(1)';
+        });
+
+        lastfmButton.addEventListener('click', () => {
+            buttonClickSound.volume = 0.3;
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+            window.open('https://www.last.fm/user/carolinekks', '_blank');
+        });
+
+        instagramButton.addEventListener('mouseover', () => {
+            instagramButton.style.transform = 'scale(1.1)';
+            instagramImg.style.transform = 'scale(1.05)';
+        });
+
+        instagramButton.addEventListener('mouseout', () => {
+            instagramButton.style.transform = 'scale(1)';
+            instagramImg.style.transform = 'scale(1)';
+        });
+
+        instagramButton.addEventListener('mousedown', () => {
+            instagramButton.style.transform = 'scale(1)';
+            instagramImg.style.transform = 'scale(1)';
+        });
+
+        instagramButton.addEventListener('click', () => {
+            buttonClickSound.volume = 0.3;
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+            window.open('https://www.instagram.com/carolinekks/', '_blank');
+        });
+
+        githubButton.addEventListener('mouseover', () => {
+            githubButton.style.transform = 'scale(1.1)';
+            githubImg.style.transform = 'scale(1.05)';
+        });
+
+        githubButton.addEventListener('mouseout', () => {
+            githubButton.style.transform = 'scale(1)';
+            githubImg.style.transform = 'scale(1)';
+        });
+
+        githubButton.addEventListener('mousedown', () => {
+            githubButton.style.transform = 'scale(1)';
+            githubImg.style.transform = 'scale(1)';
+        });
+
+        githubButton.addEventListener('click', () => {
+            buttonClickSound.volume = 0.3;
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+            window.open('https://github.com/carolinekks', '_blank');
+        });
+
         const infoText = document.createElement('div');
         infoText.className = 'sub-text';
         infoText.textContent = '[ all buttons here will open up a new tab ]';
@@ -1255,6 +1478,9 @@
         bodyContent.appendChild(steamContainer);
         bodyContent.appendChild(steamContainer2);
         bodyContent.appendChild(discordContainer);
+        bodyContent.appendChild(lastfmContainer);
+        bodyContent.appendChild(instagramContainer);
+        bodyContent.appendChild(githubContainer);
         bodyContent.appendChild(infoText);
 
         newBlock.appendChild(closeButton);
@@ -1333,6 +1559,9 @@
             newBlock.remove();
             changelogBlock = null;
           }, 500);
+          newBlock.querySelectorAll('*').forEach(el => {
+            el.replaceWith(el.cloneNode(true));
+          });
         });
 
         const titleBar = document.createElement('div');
@@ -1497,6 +1726,9 @@
                   newBlock.remove();
                   changelogBlock = null;
               }, 500);
+              newBlock.querySelectorAll('*').forEach(el => {
+                el.replaceWith(el.cloneNode(true));
+              });
           });
       }
 
