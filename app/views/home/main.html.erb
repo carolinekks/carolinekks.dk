@@ -831,10 +831,16 @@
 
         const bodyContent = document.createElement('div');
         bodyContent.className = 'window-body';
-        bodyContent.innerHTML = `
-          <div class="main-text">RAHHHH</div>
-          <div class="sub-text">burber..,</div>
-        `;
+        const mainText = document.createElement('div');
+        mainText.className = 'main-text';
+        mainText.textContent = 'RAHHHH';
+
+        const subText = document.createElement('div');
+        subText.className = 'sub-text';
+        subText.textContent = 'burber..,';
+
+        bodyContent.appendChild(mainText);
+        bodyContent.appendChild(subText);
         bodyContent.style.cssText = `
           display: flex; 
           flex-direction: column; 
@@ -1331,10 +1337,18 @@
                 height: 100%;
                 padding: 20px;
             `;
-            discordBodyContent.innerHTML = `
-                <div class="main-text" style="font-size: 1.5rem;">my ONLY discord account is @carolinekks</div>
-                <div class="sub-text" style="font-size: 1.3rem;">any other accounts are impersonations</div>
-            `;
+            const discordMainText = document.createElement('div');
+            discordMainText.className = 'main-text';
+            discordMainText.style.fontSize = '1.5rem';
+            discordMainText.textContent = 'my ONLY discord account is @carolinekks';
+
+            const discordSubText = document.createElement('div');
+            discordSubText.className = 'sub-text';
+            discordSubText.style.fontSize = '1.3rem';
+            discordSubText.textContent = 'any other accounts are impersonations';
+
+            discordBodyContent.appendChild(discordMainText);
+            discordBodyContent.appendChild(discordSubText);
 
             discordWindow.appendChild(discordCloseButton);
             discordWindow.appendChild(discordTitleBar);
@@ -1579,9 +1593,10 @@
 
         const bodyContent = document.createElement('div');
         bodyContent.className = 'window-body';
-        bodyContent.innerHTML = `
-          <div class="main-text">Coming soon!~</div>
-        `;
+        const galleryMainText = document.createElement('div');
+        galleryMainText.className = 'main-text';
+        galleryMainText.textContent = 'Coming soon!~';
+        bodyContent.appendChild(galleryMainText);
 
         newBlock.appendChild(closeButton);
         newBlock.appendChild(titleBar);
