@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>MY WEBSITE :3333</title>
+  <% content_for :title, "Caroline's page :3" %>
+  <title>Caroline's page :3</title>
+  <meta name="title" content="Caroline's page :3">
 
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="audio" href="<%= asset_path 'click.mp3' %>">
@@ -234,36 +236,6 @@
         transform: scale(0);
         opacity: 0;
       }
-    }
-
-    .wave1 path {
-      fill: #ff7f91;
-      opacity: 0.5;
-    }
-
-    .wave2 path {
-      fill: #ffa1b8;
-      opacity: 0.35;
-    }
-
-    .wave3 path {
-      fill: #ff4c6d;
-      opacity: 0.4;
-    }
-
-    body.dark-mode .wave1 path {
-      fill: #6a4a82;
-      opacity: 0.6;
-    }
-
-    body.dark-mode .wave2 path {
-      fill: #8e6aa9;
-      opacity: 0.4;
-    }
-
-    body.dark-mode .wave3 path {
-      fill: #5c3e6a;
-      opacity: 0.5;
     }
 
     #sparkle-container {
