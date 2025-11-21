@@ -73,6 +73,10 @@ volumes:
 # version inside the asset_path.
 asset_path: /rails/public/assets
 
+hooks:
+  post-deploy:
+    - app exec --reuse "bin/rails runner 'Rails.cache.delete(\"github_commits\")'"
+
 # Configure the image builder.
 builder:
   arch: amd64
