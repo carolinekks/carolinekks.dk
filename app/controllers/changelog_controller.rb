@@ -5,7 +5,24 @@ class ChangelogController < ApplicationController
         fetch_github_commits
       end
 
-      render json: commits
+      filtered_commits = commits.select do |commit|
+        commit[:stats][:total] > 20
+      end
+
+      if filtered_commits.empty?
+        filtered_commits = [
+          {
+            date: Date.today.iso8601,
+            title: "No Significant Changes",
+            details: [ "All recent changes were minor (20 lines or less)" ],
+            sha: "filtered",
+            url: "https://github.com/carolinekks/carolinekks.dk",
+            stats: { additions: 0, deletions: 0, total: 0 }
+          }
+        ]
+      end
+
+      render json: filtered_commits
     rescue => e
       Rails.logger.error "Changelog controller error: #{e.message}"
       render json: [
@@ -18,6 +35,44 @@ class ChangelogController < ApplicationController
           stats: { additions: 0, deletions: 0, total: 0 }
         }
       ]
+    end
+  end
+
+  def refresh
+    begin
+      Rails.cache.delete("github_commits")
+
+      fresh_commits = fetch_github_commits
+
+      Rails.cache.write("github_commits", fresh_commits, expires_in: 1.hour)
+
+      filtered_commits = fresh_commits.select do |commit|
+        commit[:stats][:total] > 20
+      end
+
+      if filtered_commits.empty?
+        filtered_commits = [
+          {
+            date: Date.today.iso8601,
+            title: "No Significant Changes",
+            details: [ "All recent changes were minor (20 lines or less)" ],
+            sha: "filtered",
+            url: "https://github.com/carolinekks/carolinekks.dk",
+            stats: { additions: 0, deletions: 0, total: 0 }
+          }
+        ]
+      end
+
+      render json: {
+        message: "Cache refreshed successfully",
+        commits: filtered_commits,
+        timestamp: Time.current.iso8601
+      }
+    rescue => e
+      Rails.logger.error "Cache refresh error: #{e.message}"
+      render json: {
+        error: "Failed to refresh cache: #{e.message}"
+      }, status: :internal_server_error
     end
   end
 
