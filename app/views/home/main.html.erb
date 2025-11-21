@@ -1932,8 +1932,14 @@
               renderChangelogItems(bodyContent, commits, changelogId);
           } catch (error) {
               console.error('Error fetching GitHub commits:', error);
-              loadingMessage.textContent = 'Failed to load changelog. Showing static data...';
-              renderStaticChangelog(bodyContent, changelogId);
+              
+              loadingMessage.textContent = 'GitHub API limit reached. Showing static changelog data.';
+              loadingMessage.style.color = document.body.classList.contains('dark-mode') ? '#ff7f91' : '#ff4c6d';
+              
+              setTimeout(() => {
+                  bodyContent.removeChild(loadingMessage);
+                  renderStaticChangelog(bodyContent, changelogId);
+              }, 2000);
           }
 
           const darkModeObserver = new MutationObserver(() => {
@@ -1961,78 +1967,40 @@
       }
 
       async function fetchGitHubCommits() {
-          const username = 'carolinekks';
-          const repo = 'carolinekks.dk';
-          const commitsUrl = `https://api.github.com/repos/${username}/${repo}/commits?per_page=20`;
-          
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000);
-          
           try {
-              const commitsResponse = await fetch(commitsUrl, {
-                  signal: controller.signal,
-                  headers: {
-                      'Accept': 'application/vnd.github.v3+json'
-                  }
-              });
+              console.log('Fetching from /changelog_data...');
+              const response = await fetch('/changelog_data');
               
-              if (!commitsResponse.ok) {
-                  throw new Error(`GitHub API error: ${commitsResponse.status}`);
+              console.log('Response status:', response.status);
+              
+              if (!response.ok) {
+                  throw new Error(`Server error: ${response.status}`);
               }
-
-              const commits = await commitsResponse.json();
-
-              const detailedCommits = await Promise.all(
-                  commits.slice(0, 10).map(async (commit) => { /* Limit to 10 */
-                      try {
-                          const commitUrl = `https://api.github.com/repos/${username}/${repo}/commits/${commit.sha}`;
-                          const detailResponse = await fetch(commitUrl, {
-                              signal: controller.signal
-                          });
-                          
-                          if (detailResponse.ok) {
-                              const commitDetail = await detailResponse.json();
-                              return {
-                                  ...commit,
-                                  stats: commitDetail.stats || { additions: 0, deletions: 0, total: 0 }
-                              };
-                          }
-                      } catch (error) {
-                          console.warn(`Failed to fetch details for commit ${commit.sha}:`, error);
-                      }
-
-                      return {
-                          ...commit,
-                          stats: { additions: 0, deletions: 0, total: 0 }
-                      };
-                  })
-              );
               
-              clearTimeout(timeoutId);
+              const commits = await response.json();
+              console.log('Received commits:', commits);
               
-              return detailedCommits.map(commit => {
-                  const commitDate = new Date(commit.commit.author.date);
-                  const formattedDate = commitDate.toISOString().split('T')[0];
-                  
+              const processedCommits = commits.map(commit => {
                   const sanitizeText = (text) => {
                       return text ? text.replace(/[<>]/g, '') : '';
                   };
                   
                   return {
-                      date: formattedDate,
-                      title: sanitizeText(commit.commit.message.split('\n')[0] || 'No title'),
-                      details: commit.commit.message.split('\n').slice(1)
-                          .filter(line => line.trim())
-                          .map(line => sanitizeText(line)),
-                      sha: commit.sha ? commit.sha.substring(0, 7) : 'unknown',
-                      url: commit.html_url || '#',
+                      date: commit.date,
+                      title: sanitizeText(commit.title || ''),
+                      details: (commit.details || []).map(line => sanitizeText(line)),
+                      sha: commit.sha || 'unknown',
+                      url: commit.url || '#',
                       stats: commit.stats || { additions: 0, deletions: 0, total: 0 }
                   };
               });
               
+              console.log('Processed commits:', processedCommits);
+              return processedCommits;
+              
           } catch (error) {
-              clearTimeout(timeoutId);
-              throw error;
+              console.error('Error fetching changelog from server:', error);
+              throw new Error('Failed to load changelog data');
           }
       }
 
@@ -2318,10 +2286,21 @@
       function renderStaticChangelog(container, changelogId) {
           const staticData = [
               {
-                  date: "2025-05-19",
-                  title: "Preproduction push",
-                  details: ["First push to github"]
+                  date: "2025-01-15",
+                  title: "Static Changelog Data",
+                  details: ["GitHub API is currently unavailable.", "Showing static changelog data instead."],
+                  sha: "static",
+                  url: "https://github.com/carolinekks/carolinekks.dk",
+                  stats: { additions: 0, deletions: 0, total: 0 }
               },
+              {
+                  date: "2025-05-19",
+                  title: "Preproduction push", 
+                  details: ["First push to github"],
+                  sha: "static",
+                  url: "https://github.com/carolinekks/carolinekks.dk",
+                  stats: { additions: 0, deletions: 0, total: 0 }
+              }
           ];
           
           staticData.forEach(item => {
