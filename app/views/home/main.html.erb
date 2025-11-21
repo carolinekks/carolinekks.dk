@@ -11,6 +11,7 @@
   <link rel="preload" as="audio" href="<%= asset_path 'close.mp3' %>">
   <link rel="preload" as="audio" href="<%= asset_path 'light.mp3' %>">
   <link rel="preload" as="audio" href="<%= asset_path 'dark.mp3' %>">
+  <link rel="preload" as="audio" href="<%= asset_path 'folder.mp3' %>">
   <%= favicon_link_tag 'tab.ico' %>
   <noscript><link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"></noscript>
 
@@ -484,6 +485,14 @@
             animation: none !important;
         }
     }
+
+    .gallery img {
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
+        user-drag: none;
+    }
+
   </style>
 </head>
 <body>
@@ -578,6 +587,7 @@
   <audio id="dark-sound" src="<%= asset_path 'dark.mp3' %>" preload="auto"></audio>
   <audio id="button-click-sound" src="<%= asset_path 'click.mp3' %>" preload="auto"></audio>
   <audio id="close-sound" src="<%= asset_path 'close.mp3' %>" preload="auto"></audio>
+  <audio id="folder-sound" src="<%= asset_path 'folder.mp3' %>" preload="auto"></audio>
 
   <script>
     function centerWindow() {
@@ -598,6 +608,7 @@
     const darkSound = document.getElementById("dark-sound");
     const toggleSound = document.getElementById("toggle-sound");
     const buttonClickSound = document.getElementById("button-click-sound");
+    const folderSound = document.getElementById("folder-sound")
     const closeSound = document.getElementById('close-sound');
 
     toggleBtn.addEventListener('click', () => {
@@ -899,6 +910,7 @@
 
           const currentAge=Math.floor((Date.now() - new Date('2008-02-22').getTime()) / (365.25 * 24 * 60 * 60 * 1000));
 
+          /* MORE DROPDOWNS GO HERE */
           const dropdownSections = [
               {
                   title: "Hello! I'm Caroline I...",
@@ -1719,105 +1731,742 @@
       }
 
       function handleGalleryClick() {
-        buttonClickSound.volume = 0.3;
-        buttonClickSound.currentTime = 0;
-        buttonClickSound.play();
-        if (galleryBlock) return;
+          buttonClickSound.volume = 0.3;
+          buttonClickSound.currentTime = 0;
+          buttonClickSound.play();
+          if (galleryBlock) return;
 
-        const newBlock = document.createElement('div');
-        newBlock.className = 'window gallery';
-        newBlock.style.cssText = `
-          position: absolute; 
-          width: 1000px; 
-          height: 600px; 
-          visibility: visible; 
-          border-radius: 10px; 
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-          display: flex; 
-          flex-direction: column;
-          z-index: 10;
-          animation: pop-in 0.5s ease-out forwards;
-          transform: scale(0);
-          opacity: 0;
-        `;
+          const newBlock = document.createElement('div');
+          newBlock.className = 'window gallery';
+          newBlock.style.cssText = `
+              position: absolute; 
+              width: 1000px; 
+              height: 600px; 
+              visibility: visible; 
+              border-radius: 10px; 
+              box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+              display: flex; 
+              flex-direction: column;
+              z-index: 10;
+              animation: pop-in 0.5s ease-out forwards;
+              transform: scale(0);
+              opacity: 0;
+          `;
 
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '✖';
-        closeButton.style.cssText = `
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: transparent;
-          border: none;
-          color: white;
-          border-radius: 5px;
-          padding: 5px, 10px;
-          cursor: pointer;
-          font-size: 1.2rem;
-          outline: none;
-          transition: transform 0.2s ease, background-color 0.3s ease;
-        `;
+          const closeButton = document.createElement('button');
+          closeButton.textContent = '✖';
+          closeButton.style.cssText = `
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background: transparent;
+              border: none;
+              color: white;
+              border-radius: 5px;
+              padding: 5px, 10px;
+              cursor: pointer;
+              font-size: 1.2rem;
+              outline: none;
+              transition: transform 0.2s ease, background-color 0.3s ease;
+              z-index: 15;
+          `;
 
-        closeButton.addEventListener('mouseover', () => {
-          closeButton.style.transform = 'scale(1.2)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
-
-        closeButton.addEventListener('mouseout', () => {
-          closeButton.style.transform = 'scale(1)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
-
-        closeButton.addEventListener('mousedown', () => {
-          closeButton.style.transform = 'scale(0.8)';
-        });
-
-        closeButton.addEventListener('mouseup', () => {
-          closeButton.style.transform = 'scale(1)';
-        });
-
-
-        closeButton.addEventListener('click', () => {
-          closeSound.volume = 0.3;
-          closeSound.currentTime = 0;
-          closeSound.play();
-          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
-          setTimeout(() => {
-            newBlock.remove();
-            changelogBlock = null;
-          }, 500);
-          newBlock.querySelectorAll('*').forEach(el => {
-            el.replaceWith(el.cloneNode(true));
+          closeButton.addEventListener('mouseover', () => {
+              closeButton.style.transform = 'scale(1.2)';
+              closeButton.style.backgroundColor = 'transparent';
           });
-        });
 
-        const titleBar = document.createElement('div');
-        titleBar.className = 'window-title';
-        titleBar.textContent = 'THE GALLERY!!!';
-        titleBar.style.cssText = `
-          background-color: rgb(88, 83, 86); 
-          color: white; 
-          padding: 10px 16px; 
-          font-weight: bold; 
-          font-size: 1.2rem; 
-          cursor: default; 
-          user-select: none;
-        `;
+          closeButton.addEventListener('mouseout', () => {
+              closeButton.style.transform = 'scale(1)';
+              closeButton.style.backgroundColor = 'transparent';
+          });
 
-        const bodyContent = document.createElement('div');
-        bodyContent.className = 'window-body';
-        const galleryMainText = document.createElement('div');
-        galleryMainText.className = 'main-text';
-        galleryMainText.textContent = 'Coming soon!~';
-        bodyContent.appendChild(galleryMainText);
+          closeButton.addEventListener('mousedown', () => {
+              closeButton.style.transform = 'scale(0.8)';
+          });
 
-        newBlock.appendChild(closeButton);
-        newBlock.appendChild(titleBar);
-        newBlock.appendChild(bodyContent);
-        document.body.appendChild(newBlock);
-        positionWindowRandomly(newBlock, 1000, 600);
-        makeDraggable(newBlock);
-        }
+          closeButton.addEventListener('mouseup', () => {
+              closeButton.style.transform = 'scale(1)';
+          });
+
+          closeButton.addEventListener('click', () => {
+              if (newBlock.style.animation.includes('pop-out')) return;
+              closeSound.volume = 0.3;
+              closeSound.currentTime = 0;
+              closeSound.play();
+              newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+              setTimeout(() => {
+                  newBlock.remove();
+                  galleryBlock = null;
+              }, 500);
+          });
+
+          const titleBar = document.createElement('div');
+          titleBar.className = 'window-title';
+          titleBar.textContent = 'THE GALLERY!!!';
+          titleBar.style.cssText = `
+              background-color: rgb(88, 83, 86); 
+              color: white; 
+              padding: 10px 16px; 
+              font-weight: bold; 
+              font-size: 1.2rem; 
+              cursor: default; 
+              user-select: none;
+          `;
+
+          const bodyContent = document.createElement('div');
+          bodyContent.className = 'window-body';
+          bodyContent.style.cssText = `
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
+              position: relative;
+              overflow: hidden;
+          `;
+
+          const mainGalleryView = document.createElement('div');
+          mainGalleryView.className = 'gallery-main-view';
+          mainGalleryView.style.cssText = `
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              transition: opacity 0.4s ease, transform 0.4s ease;
+          `;
+
+          const galleryTitle = document.createElement('div');
+          galleryTitle.className = 'main-text';
+          galleryTitle.textContent = 'My Gallery';
+          galleryTitle.style.cssText = `
+              font-size: 2.5rem;
+              margin-bottom: 50px;
+          `;
+
+          const foldersContainer = document.createElement('div');
+          foldersContainer.style.cssText = `
+              display: flex;
+              justify-content: center;
+              gap: 80px;
+              align-items: center;
+              flex-wrap: wrap;
+          `;
+
+          const folderData = [
+              { 
+                  name: 'IRL', 
+                  type: 'irl',
+                  description: 'Photos from my recent life'
+              },
+              { 
+                  name: 'Hall of Fame', 
+                  type: 'hall-of-fame',
+                  description: 'My favorite images that I found really funny'
+              },
+              { 
+                  name: 'Gobi', 
+                  type: 'gobi',
+                  description: 'My dog :3'
+              }
+          ];
+
+          folderData.forEach(folder => {
+              const folderContainer = document.createElement('div');
+              folderContainer.style.cssText = `
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  gap: 15px;
+              `;
+
+              const folderButton = document.createElement('button');
+              folderButton.style.cssText = `
+                  background: transparent;
+                  border: none;
+                  cursor: pointer;
+                  padding: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-direction: column;
+                  transition: transform 0.2s ease;
+                  width: 120px;
+                  height: auto;
+              `;
+
+              const folderImg = document.createElement('img');
+              folderImg.src = '<%= asset_path "folder.svg" %>';
+              folderImg.style.cssText = `
+                  width: 100px;
+                  height: 100px;
+                  transition: transform 0.3s ease;
+                  filter: ${document.body.classList.contains('dark-mode') ? 'invert(1) hue-rotate(180deg)' : 'invert(0) hue-rotate(0deg)'};
+              `;
+
+              const folderText = document.createElement('div');
+              folderText.textContent = folder.name;
+              folderText.className = 'button-text';
+              folderText.style.cssText = `
+                  color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                  font-size: 1.2rem;
+                  transition: color 0.3s ease;
+                  margin-top: 10px;
+              `;
+
+              folderButton.addEventListener('mouseover', () => {
+                  folderButton.style.transform = 'scale(1.1)';
+                  folderImg.style.transform = 'scale(1.05)';
+              });
+
+              folderButton.addEventListener('mouseout', () => {
+                  folderButton.style.transform = 'scale(1)';
+                  folderImg.style.transform = 'scale(1)';
+              });
+
+              folderButton.addEventListener('mousedown', () => {
+                  folderButton.style.transform = 'scale(0.95)';
+              });
+
+              folderButton.addEventListener('mouseup', () => {
+                  folderButton.style.transform = 'scale(1.1)';
+              });
+
+              let folderClickInProgress = false;
+              folderButton.addEventListener('click', () => {
+                  if (folderClickInProgress || (galleryBlock && galleryBlock.querySelector('.folder-content-view'))) {
+                      return;
+                  }
+                  folderClickInProgress = true;
+                  
+                  folderSound.volume = 0.3;
+                  folderSound.currentTime = 0;
+                  folderSound.play();
+                  showFolderContent(folder.type, folder.name, folder.description, mainGalleryView, bodyContent);
+
+                  setTimeout(() => {
+                      folderClickInProgress = false;
+                  }, 500);
+              });
+
+              folderButton.appendChild(folderImg);
+              folderContainer.appendChild(folderButton);
+              folderContainer.appendChild(folderText);
+              foldersContainer.appendChild(folderContainer);
+          });
+
+          mainGalleryView.appendChild(galleryTitle);
+          mainGalleryView.appendChild(foldersContainer);
+          bodyContent.appendChild(mainGalleryView);
+
+          newBlock.appendChild(closeButton);
+          newBlock.appendChild(titleBar);
+          newBlock.appendChild(bodyContent);
+          document.body.appendChild(newBlock);
+          positionWindowRandomly(newBlock, 1000, 600);
+          makeDraggable(newBlock);
+          
+          galleryBlock = newBlock;
+
+          function showFolderContent(folderType, folderName, folderDescription, mainView, bodyContent) {
+              mainView.style.opacity = '0';
+              mainView.style.transform = 'translateY(20px)';
+
+              setTimeout(() => {
+                  mainView.style.display = 'none';
+
+                  const folderView = document.createElement('div');
+                  folderView.className = 'folder-content-view';
+                  folderView.style.cssText = `
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      width: 100%;
+                      height: 100%;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      padding: 20px;
+                      opacity: 0;
+                      transform: translateY(20px);
+                      transition: opacity 0.4s ease, transform 0.4s ease;
+                  `;
+
+                  const backButton = document.createElement('button');
+                  backButton.style.cssText = `
+                      align-self: flex-start;
+                      background: transparent;
+                      border: none;
+                      cursor: pointer;
+                      padding: 10px 20px;
+                      margin-bottom: 20px;
+                      display: flex;
+                      align-items: center;
+                      gap: 10px;
+                      transition: transform 0.2s ease;
+                      color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                      font-size: 1.1rem;
+                      border-radius: 5px;
+                  `;
+
+                  const backArrow = document.createElement('span');
+                  backArrow.textContent = '←';
+                  backArrow.style.cssText = `
+                      font-size: 1.3rem;
+                  `;
+
+                  const backText = document.createElement('span');
+                  backText.textContent = 'Back to Gallery';
+
+                  backButton.appendChild(backArrow);
+                  backButton.appendChild(backText);
+
+                  let backClickInProgress = false;
+                  backButton.addEventListener('click', () => {
+                      if (backClickInProgress || folderView.style.opacity === '0') return;
+                      backClickInProgress = true;
+                      
+                      folderSound.volume = 0.3;
+                      folderSound.currentTime = 0;
+                      folderSound.play();
+
+                      folderView.style.opacity = '0';
+                      folderView.style.transform = 'translateY(20px)';
+                      
+                      setTimeout(() => {
+                          folderView.remove();
+                          mainView.style.display = 'flex';
+                          setTimeout(() => {
+                              mainView.style.opacity = '1';
+                              mainView.style.transform = 'translateY(0)';
+                              backClickInProgress = false;
+                          }, 50);
+                      }, 400);
+                  });
+
+                  backButton.addEventListener('mouseover', () => {
+                      if (!backClickInProgress) {
+                          backButton.style.transform = 'scale(1.05)';
+                          backButton.style.backgroundColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                      }
+                  });
+
+                  backButton.addEventListener('mouseout', () => {
+                      backButton.style.transform = 'scale(1)';
+                      backButton.style.backgroundColor = 'transparent';
+                  });
+
+                  const folderTitle = document.createElement('div');
+                  folderTitle.className = 'main-text';
+                  folderTitle.textContent = folderDescription;
+                  folderTitle.style.cssText = `
+                      font-size: 2rem;
+                      margin-bottom: 15px;
+                      text-align: center;
+                      line-height: 1.4;
+                  `;
+
+                  const folderSubtitle = document.createElement('div');
+                  folderSubtitle.className = 'sub-text';
+                  folderSubtitle.textContent = folderName;
+                  folderSubtitle.style.cssText = `
+                      font-size: 1.3rem;
+                      opacity: 0.7;
+                      margin-bottom: 30px;
+                      font-style: italic;
+                  `;
+
+                  const imageGrid = document.createElement('div');
+                  imageGrid.className = 'image-grid';
+                  imageGrid.style.cssText = `
+                      display: grid;
+                      grid-template-columns: repeat(5, 1fr);
+                      gap: 15px;
+                      width: 100%;
+                      max-width: 900px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      overflow-y: auto;
+                      max-height: 400px;
+                  `;
+
+                  /* NEW IMAGES GO HERE */
+                  const imageData = {
+                      'irl': [
+                          { src: '<%= asset_path "irl/photo1.webp" %>', caption: 'irltest', alt: 'irltestsmall' },
+                      ],
+                      'hall-of-fame': [
+                          { src: '<%= asset_path "hof/photo1.webp" %>', caption: 'hoftest', alt: 'hoftestsmall' },
+                      ],
+                      'gobi': [
+                          { src: '<%= asset_path "gobi/photo1.webp" %>', caption: 'gobitest', alt: 'gobitestsmall' },
+                      ]
+                  };
+
+                  const currentImages = imageData[folderType] || [];
+
+                  currentImages.forEach((image, index) => {
+                      const imageContainer = document.createElement('div');
+                      imageContainer.style.cssText = `
+                          aspect-ratio: 1;
+                          border-radius: 8px;
+                          overflow: hidden;
+                          cursor: pointer;
+                          transition: transform 0.3s ease;
+                          background: ${document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                      `;
+
+                      const img = document.createElement('img');
+                      img.src = image.src;
+                      img.alt = image.alt;
+                      img.style.cssText = `
+                          width: 100%;
+                          height: 100%;
+                          object-fit: cover;
+                          transition: transform 0.3s ease;
+                          pointer-events: none;
+                          user-select: none;
+                          -webkit-user-drag: none;
+                          user-drag: none;
+                      `;
+
+                      imageContainer.addEventListener('mouseover', () => {
+                          imageContainer.style.transform = 'scale(1.05)';
+                          img.style.transform = 'scale(1.1)';
+                      });
+
+                      imageContainer.addEventListener('mouseout', () => {
+                          imageContainer.style.transform = 'scale(1)';
+                          img.style.transform = 'scale(1)';
+                      });
+
+                      imageContainer.addEventListener('mousedown', () => {
+                          imageContainer.style.transform = 'scale(0.95)';
+                      });
+
+                      imageContainer.addEventListener('mouseup', () => {
+                          imageContainer.style.transform = 'scale(1.05)';
+                      });
+
+                      let imageClickInProgress = false;
+                      imageContainer.addEventListener('click', () => {
+                          if (imageClickInProgress || folderView.querySelector('.enlarged-view')) {
+                              return;
+                          }
+                          imageClickInProgress = true;
+                          
+                          folderSound.volume = 0.3;
+                          folderSound.currentTime = 0;
+                          folderSound.play();
+                          showEnlargedImage(image, folderView, imageGrid);
+                          
+                          setTimeout(() => {
+                              imageClickInProgress = false;
+                          }, 500);
+                      });
+
+                      imageContainer.appendChild(img);
+                      imageGrid.appendChild(imageContainer);
+                  });
+
+                  if (currentImages.length === 0) {
+                      const placeholder = document.createElement('div');
+                      placeholder.style.cssText = `
+                          grid-column: 1 / -1;
+                          text-align: center;
+                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                          font-size: 1.3rem;
+                          opacity: 0.7;
+                          padding: 40px;
+                      `;
+                      placeholder.textContent = 'No images in this folder yet!';
+                      imageGrid.appendChild(placeholder);
+                  }
+
+                  folderView.appendChild(backButton);
+                  folderView.appendChild(folderTitle);
+                  folderView.appendChild(folderSubtitle);
+                  folderView.appendChild(imageGrid);
+                  bodyContent.appendChild(folderView);
+
+                  setTimeout(() => {
+                      folderView.style.opacity = '1';
+                      folderView.style.transform = 'translateY(0)';
+                  }, 50);
+
+                  function showEnlargedImage(image, folderView, imageGrid) {
+                      if (folderView.querySelector('.enlarged-view')) {
+                          return;
+                      }
+
+                      const folderTitle = folderView.querySelector('.main-text');
+                      const folderSubtitle = folderView.querySelector('.sub-text');
+                      const backButton = folderView.querySelector('button');
+                      
+                      folderTitle.style.opacity = '0';
+                      folderSubtitle.style.opacity = '0';
+                      backButton.style.opacity = '0';
+                      imageGrid.style.opacity = '0';
+                      imageGrid.style.transform = 'scale(0.9)';
+                      
+                      setTimeout(() => {
+                          folderTitle.style.display = 'none';
+                          folderSubtitle.style.display = 'none';
+                          backButton.style.display = 'none';
+                          imageGrid.style.display = 'none';
+
+                          const enlargedView = document.createElement('div');
+                          enlargedView.className = 'enlarged-view';
+                          enlargedView.style.cssText = `
+                              position: absolute;
+                              top: 0;
+                              left: 0;
+                              width: 100%;
+                              height: 100%;
+                              display: flex;
+                              align-items: flex-start;
+                              justify-content: center;
+                              padding: 20px;
+                              opacity: 0;
+                              transform: scale(0.9);
+                              transition: opacity 0.3s ease, transform 0.3s ease;
+                          `;
+
+                          const backToFolderButton = document.createElement('button');
+                          backToFolderButton.style.cssText = `
+                              position: absolute;
+                              top: 20px;
+                              left: 20px;
+                              background: transparent;
+                              border: none;
+                              cursor: pointer;
+                              padding: 10px 20px;
+                              display: flex;
+                              align-items: center;
+                              gap: 10px;
+                              transition: transform 0.2s ease;
+                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                              font-size: 1.1rem;
+                              border-radius: 5px;
+                              z-index: 10;
+                          `;
+
+                          const backToFolderArrow = document.createElement('span');
+                          backToFolderArrow.textContent = '←';
+                          backToFolderArrow.style.cssText = `
+                              font-size: 1.3rem;
+                          `;
+
+                          const backToFolderText = document.createElement('span');
+                          backToFolderText.textContent = 'Back to Folder';
+
+                          backToFolderButton.appendChild(backToFolderArrow);
+                          backToFolderButton.appendChild(backToFolderText);
+
+                          let backToFolderClickInProgress = false;
+                          backToFolderButton.addEventListener('click', () => {
+                              if (backToFolderClickInProgress || enlargedView.style.opacity === '0') return;
+                              backToFolderClickInProgress = true;
+                              
+                              folderSound.volume = 0.3;
+                              folderSound.currentTime = 0;
+                              folderSound.play();
+
+                              enlargedView.style.opacity = '0';
+                              enlargedView.style.transform = 'scale(0.9)';
+                              
+                              setTimeout(() => {
+                                  enlargedView.remove();
+                                  
+                                  folderTitle.style.display = 'block';
+                                  folderSubtitle.style.display = 'block';
+                                  backButton.style.display = 'block';
+                                  imageGrid.style.display = 'grid';
+                                  
+                                  setTimeout(() => {
+                                      folderTitle.style.opacity = '1';
+                                      folderSubtitle.style.opacity = '1';
+                                      backButton.style.opacity = '1';
+                                      imageGrid.style.opacity = '1';
+                                      imageGrid.style.transform = 'scale(1)';
+                                      backToFolderClickInProgress = false;
+                                  }, 50);
+                              }, 300);
+                          });
+
+                          backToFolderButton.addEventListener('mouseover', () => {
+                              if (!backToFolderClickInProgress) {
+                                  backToFolderButton.style.transform = 'scale(1.05)';
+                                  backToFolderButton.style.backgroundColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                              }
+                          });
+
+                          backToFolderButton.addEventListener('mouseout', () => {
+                              backToFolderButton.style.transform = 'scale(1)';
+                              backToFolderButton.style.backgroundColor = 'transparent';
+                          });
+
+                          const imageContainer = document.createElement('div');
+                          imageContainer.style.cssText = `
+                              flex: 0 0 60%;
+                              display: flex;
+                              flex-direction: column;
+                              align-items: center;
+                              justify-content: flex-start;
+                              height: 100%;
+                              padding-right: 20px;
+                              box-sizing: border-box;
+                              padding-top: 100px;
+                          `;
+
+                          const enlargedImg = document.createElement('img');
+                          enlargedImg.src = image.src;
+                          enlargedImg.alt = image.alt;
+                          /* img size */
+                          enlargedImg.style.cssText = `
+                              max-width: 70%; 
+                              max-height: 70%;
+                              object-fit: contain;
+                              border-radius: 10px;
+                              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+                              display: block;
+                              border: none;
+                              outline: none;
+                          `;
+
+                          const infoContainer = document.createElement('div');
+                          infoContainer.style.cssText = `
+                              flex: 0 0 40%; 
+                              display: flex;
+                              flex-direction: column;
+                              justify-content: flex-start;
+                              height: 100%;
+                              padding-right: 175px;
+                              box-sizing: border-box;
+                              padding-top: 200px;
+                          `;
+
+                          const captionTitle = document.createElement('div');
+                          captionTitle.textContent = 'Caption';
+                          captionTitle.className = 'caption-title';
+                          captionTitle.style.cssText = `
+                              font-size: 3rem;
+                              font-weight: bold;
+                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                              margin-bottom: 10px;
+                              opacity: 0.8;
+                          `;
+
+                          const caption = document.createElement('div');
+                          caption.className = 'image-caption';
+                          caption.textContent = image.caption;
+                          caption.style.cssText = `
+                              font-size: 2rem;
+                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                              line-height: 1.6;
+                              word-wrap: break-word;
+                              max-height: 150px;
+                              overflow-y: auto;
+                              padding-right: 10px;
+                              margin-top: 5px;
+                          `;
+
+                          const captionStyle = document.createElement('style');
+                          captionStyle.className = 'caption-scrollbar-style';
+                          captionStyle.textContent = `
+                              .image-caption::-webkit-scrollbar {
+                                  width: 6px;
+                              }
+                              .image-caption::-webkit-scrollbar-track {
+                                  background: ${document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                                  border-radius: 3px;
+                              }
+                              .image-caption::-webkit-scrollbar-thumb {
+                                  background: ${document.body.classList.contains('dark-mode') ? '#ffa1b8' : '#ff4c6d'};
+                                  border-radius: 3px;
+                              }
+                          `;
+                          enlargedView.appendChild(captionStyle);
+
+                          imageContainer.appendChild(enlargedImg);
+                          infoContainer.appendChild(captionTitle);
+                          infoContainer.appendChild(caption);
+
+                          enlargedView.appendChild(backToFolderButton);
+                          enlargedView.appendChild(imageContainer);
+                          enlargedView.appendChild(infoContainer);
+                          folderView.appendChild(enlargedView);
+
+                          setTimeout(() => {
+                              enlargedView.style.opacity = '1';
+                              enlargedView.style.transform = 'scale(1)';
+                          }, 50);
+                      }, 300);
+                  }
+              }, 400);
+          }
+
+          const darkModeObserver = new MutationObserver(() => {
+              const isDarkMode = document.body.classList.contains('dark-mode');
+
+              const folderImages = newBlock.querySelectorAll('.gallery-main-view img, .folder-content-view .folder-icon');
+              const folderTexts = newBlock.querySelectorAll('.button-text');
+              const allTextElements = newBlock.querySelectorAll('.main-text, .sub-text, .image-caption, .window-body > div:not(.image-grid)');
+              const allButtons = newBlock.querySelectorAll('button');
+              const captionTitles = newBlock.querySelectorAll('.enlarged-view .caption-title');
+
+              folderImages.forEach(img => {
+                  if (img.src.includes('folder.svg') || img.classList.contains('folder-icon')) {
+                      img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : 'invert(0) hue-rotate(0deg)';
+                  }
+              });
+              
+              folderTexts.forEach(text => {
+                  text.style.color = isDarkMode ? 'white' : 'black';
+              });
+              
+              allTextElements.forEach(text => {
+                  text.style.color = isDarkMode ? 'white' : 'black';
+              });
+
+              allButtons.forEach(button => {
+                  button.style.color = isDarkMode ? 'white' : 'black';
+              });
+
+              captionTitles.forEach(title => {
+                  title.style.color = isDarkMode ? 'white' : 'black';
+              });
+
+              const captionStyle = newBlock.querySelector('.caption-scrollbar-style');
+              if (captionStyle) {
+                  captionStyle.textContent = `
+                      .image-caption::-webkit-scrollbar {
+                          width: 6px;
+                      }
+                      .image-caption::-webkit-scrollbar-track {
+                          background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                          border-radius: 3px;
+                      }
+                      .image-caption::-webkit-scrollbar-thumb {
+                          background: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                          border-radius: 3px;
+                      }
+                  `;
+              }
+          });
+
+          darkModeObserver.observe(document.body, {
+              attributes: true,
+              attributeFilter: ['class']
+          });
+
+          newBlock._observers = [darkModeObserver];
+      }
 
         async function handleChangelogClick() {
           buttonClickSound.volume = 0.3;
