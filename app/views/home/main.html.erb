@@ -469,7 +469,8 @@
     }
 
     .sparkle {
-        will-change: opacity;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -745,118 +746,330 @@
       }
 
       function handleAboutMeClick() {
-        buttonClickSound.volume = 0.3;
-        buttonClickSound.currentTime = 0;
-        buttonClickSound.play();
-        if (existingBlock) return;
+          buttonClickSound.volume = 0.3;
+          buttonClickSound.currentTime = 0;
+          buttonClickSound.play();
+          if (existingBlock) return;
 
-        const newBlock = document.createElement('div');
-        newBlock.className = 'window about-me';
-        newBlock.style.cssText = `
-          position: absolute; 
-          width: 1000px; 
-          height: 600px; 
-          visibility: visible; 
-          border-radius: 10px; 
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-          display: flex; 
-          flex-direction: column;
-          z-index: 10;
-          animation: pop-in 0.5s ease-out forwards;
-          transform: scale(0);
-          opacity: 0;
-        `;
+          const newBlock = document.createElement('div');
+          newBlock.className = 'window about-me';
+          newBlock.style.cssText = `
+              position: absolute; 
+              width: 1000px; 
+              height: 600px; 
+              visibility: visible; 
+              border-radius: 10px; 
+              box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+              display: flex; 
+              flex-direction: column;
+              z-index: 10;
+              animation: pop-in 0.5s ease-out forwards;
+              transform: scale(0);
+              opacity: 0;
+              overflow: hidden;
+          `;
 
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '✖';
-        closeButton.style.cssText = `
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: transparent;
-          border: none;
-          color: white;
-          border-radius: 5px;
-          padding: 5px, 10px;
-          cursor: pointer;
-          font-size: 1.2rem;
-          outline: none;
-          transition: transform 0.2s ease, background-color 0.3s ease;
-        `;
+          const headerSection = document.createElement('div');
+          headerSection.style.cssText = `
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              background-color: rgb(88, 83, 86);
+              color: white;
+              padding: 10px 16px;
+              flex-shrink: 0;
+          `;
 
-        closeButton.addEventListener('mouseover', () => {
-          closeButton.style.transform = 'scale(1.2)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
+          const titleBar = document.createElement('div');
+          titleBar.className = 'window-title';
+          titleBar.textContent = 'About me!~';
+          titleBar.style.cssText = `
+              font-weight: bold; 
+              font-size: 1.2rem; 
+              cursor: default; 
+              user-select: none;
+              flex: 1;
+          `;
 
-        closeButton.addEventListener('mouseout', () => {
-          closeButton.style.transform = 'scale(1)';
-          closeButton.style.backgroundColor = 'transparent';
-        });
+          const closeButton = document.createElement('button');
+          closeButton.textContent = '✖';
+          closeButton.style.cssText = `
+              background: transparent;
+              border: none;
+              color: white;
+              cursor: pointer;
+              font-size: 1.2rem;
+              outline: none;
+              transition: transform 0.2s ease, background-color 0.3s ease;
+              padding: 4px 8px;
+              border-radius: 3px;
+          `;
 
-        closeButton.addEventListener('mousedown', () => {
-          closeButton.style.transform = 'scale(0.8)';
-        });
-
-        closeButton.addEventListener('mouseup', () => {
-          closeButton.style.transform = 'scale(1)';
-        });
-
-        closeButton.addEventListener('click', () => {
-          closeSound.volume = 0.3;
-          closeSound.currentTime = 0;
-          closeSound.play();
-          newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
-          setTimeout(() => {
-            newBlock.remove();
-            existingBlock = null;
-          }, 500);
-          newBlock.querySelectorAll('*').forEach(el => {
-            el.replaceWith(el.cloneNode(true));
+          closeButton.addEventListener('mouseover', () => {
+              closeButton.style.transform = 'scale(1.2)';
           });
-        });
 
-        const titleBar = document.createElement('div');
-        titleBar.className = 'window-title';
-        titleBar.textContent = 'About me!~';
-        titleBar.style.cssText = `
-          background-color: rgb(88, 83, 86); 
-          color: white; 
-          padding: 10px 16px; 
-          font-weight: bold; 
-          font-size: 1.2rem; 
-          cursor: default; 
-          user-select: none;
-        `;
+          closeButton.addEventListener('mouseout', () => {
+              closeButton.style.transform = 'scale(1)';
+          });
 
-        const bodyContent = document.createElement('div');
-        bodyContent.className = 'window-body';
-        const mainText = document.createElement('div');
-        mainText.className = 'main-text';
-        mainText.textContent = 'RAHHHH';
+          closeButton.addEventListener('mousedown', () => {
+              closeButton.style.transform = 'scale(0.8)';
+          });
 
-        const subText = document.createElement('div');
-        subText.className = 'sub-text';
-        subText.textContent = 'burber..,';
+          closeButton.addEventListener('mouseup', () => {
+              closeButton.style.transform = 'scale(1)';
+          });
 
-        bodyContent.appendChild(mainText);
-        bodyContent.appendChild(subText);
-        bodyContent.style.cssText = `
-          display: flex; 
-          flex-direction: column; 
-          align-items: center; 
-          justify-content: center; 
-          text-align: center; 
-          height: 100%; 
-          padding: 20px; 
-        `;
+          closeButton.addEventListener('click', () => {
+              closeSound.volume = 0.3;
+              closeSound.currentTime = 0;
+              closeSound.play();
+              newBlock.style.animation = 'pop-out 0.5s ease-out forwards';
+              setTimeout(() => {
+                  newBlock.remove();
+                  existingBlock = null;
+              }, 500);
+          });
 
-        newBlock.appendChild(closeButton);
-        newBlock.appendChild(titleBar);
-        newBlock.appendChild(bodyContent);
-        document.body.appendChild(newBlock);
-        positionWindowRandomly(newBlock, 1000, 600);
-        makeDraggable(newBlock);
+          const bodyContainer = document.createElement('div');
+          bodyContainer.style.cssText = `
+              flex: 1;
+              display: flex;
+              padding: 20px;
+              height: calc(100% - 60px);
+              overflow: hidden;
+          `;
+
+          const leftSide = document.createElement('div');
+          leftSide.style.cssText = `
+              width: 60%;
+              padding-right: 20px;
+              display: flex;
+              flex-direction: column;
+              overflow-y: auto;
+              height: 100%;
+          `;
+
+          const rightSide = document.createElement('div');
+          rightSide.style.cssText = `
+              width: 40%;
+              padding-left: 20px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: flex-start;
+              height: 100%;
+          `;
+
+          const aboutMeImage = document.createElement('img');
+          aboutMeImage.src = '<%= asset_path "aboutme.webp" %>'; 
+          aboutMeImage.style.cssText = `
+              width: 200px;
+              height: 200px;
+              border-radius: 15px;
+              object-fit: cover;
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+              transition: transform 0.3s ease;
+              margin-bottom: 25px;
+              margin-top: 20px;
+          `;
+
+          const largeText = document.createElement('div');
+          largeText.textContent = 'Caroline Weaver';
+          largeText.style.cssText = `
+              font-size: 2.2rem;
+              font-weight: bold;
+              color: inherit;
+              text-align: center;
+              margin-bottom: 10px;
+              line-height: 1.2;
+          `;
+
+          const smallText = document.createElement('div');
+          smallText.textContent = '(Informally known as Callie)';
+          smallText.style.cssText = `
+              font-size: 1.5rem;
+              color: inherit;
+              text-align: center;
+              opacity: 0.9;
+              margin-bottom: 30px;
+              line-height: 1.3;
+          `;
+
+          const currentAge=Math.floor((Date.now() - new Date('2008-02-22').getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+
+          const dropdownSections = [
+              {
+                  title: "Hello! I'm Caroline I...",
+                  content: "• am learning arc welding (TIG)<br>• play lots different games<br>• listen to vast genres of music"
+              },
+              {
+                  title: "Who am I?",
+                  content: `• I\'m a furry, pansexual, tgal, from Southern California :3 <br> • I am currently ${currentAge}, turning ${currentAge+1} in February`
+              }
+          ];
+
+          const aboutMeId = `aboutme-${Date.now()}`;
+          newBlock.id = aboutMeId;
+
+          const style = document.createElement('style');
+          style.textContent = generateAboutMeStyles(aboutMeId, document.body.classList.contains('dark-mode'));
+          newBlock.appendChild(style);
+
+          dropdownSections.forEach((section, index) => {
+              const dropdownElement = createAboutMeDropdown(section.title, section.content, aboutMeId);
+              leftSide.appendChild(dropdownElement);
+          });
+
+          rightSide.appendChild(aboutMeImage);
+          rightSide.appendChild(largeText);
+          rightSide.appendChild(smallText);
+
+          bodyContainer.appendChild(leftSide);
+          bodyContainer.appendChild(rightSide);
+
+          headerSection.appendChild(titleBar);
+          headerSection.appendChild(closeButton);
+          
+          newBlock.appendChild(headerSection);
+          newBlock.appendChild(bodyContainer);
+          
+          document.body.appendChild(newBlock);
+          positionWindowRandomly(newBlock, 1000, 600);
+          makeDraggable(newBlock);
+          
+          const darkModeObserver = new MutationObserver(() => {
+              style.textContent = generateAboutMeStyles(aboutMeId, document.body.classList.contains('dark-mode'));
+          });
+          darkModeObserver.observe(document.body, {
+              attributes: true,
+              attributeFilter: ['class']
+          });
+
+          newBlock._observers = [darkModeObserver];
+          
+          existingBlock = newBlock;
+      }
+
+      function createAboutMeDropdown(title, content, aboutMeId) {
+          const dropdownElement = document.createElement('div');
+          dropdownElement.className = 'aboutme-dropdown';
+
+          const header = document.createElement('div');
+          header.className = 'aboutme-header';
+          header.innerHTML = `
+              <span class="aboutme-title">${title}</span>
+              <span class="aboutme-arrow">▶</span>
+          `;
+
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'aboutme-content';
+          contentDiv.innerHTML = content;
+
+          header.addEventListener('click', () => {
+              buttonClickSound.volume = 0.2;
+              buttonClickSound.currentTime = 0;
+              buttonClickSound.play();
+
+              document.querySelectorAll(`#${aboutMeId} .aboutme-content.open`).forEach(openContent => {
+                  if (openContent !== contentDiv) {
+                      openContent.classList.remove('open');
+                      openContent.previousElementSibling.classList.remove('open');
+                  }
+              });
+
+              header.classList.toggle('open');
+              contentDiv.classList.toggle('open');
+          });
+
+          dropdownElement.appendChild(header);
+          dropdownElement.appendChild(contentDiv);
+
+          return dropdownElement;
+      }
+
+      function generateAboutMeStyles(aboutMeId, isDarkMode) {
+          return `
+              #${aboutMeId} .aboutme-dropdown {
+                  margin-bottom: 15px;
+                  border-radius: 8px;
+                  overflow: hidden;
+                  border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                  flex-shrink: 0;
+              }
+
+              #${aboutMeId} .aboutme-header {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 15px 20px;
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};
+                  cursor: pointer;
+                  user-select: none;
+                  transition: all 0.3s ease;
+              }
+
+              #${aboutMeId} .aboutme-header:hover {
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)'};
+              }
+
+              #${aboutMeId} .aboutme-header.open {
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'};
+              }
+
+              #${aboutMeId} .aboutme-title {
+                  font-size: 1.3rem;
+                  font-weight: bold;
+                  color: inherit;
+                  flex: 1;
+              }
+
+              #${aboutMeId} .aboutme-arrow {
+                  transition: transform 0.3s ease;
+                  color: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                  font-size: 1.1rem;
+                  margin-left: 10px;
+              }
+
+              #${aboutMeId} .aboutme-header.open .aboutme-arrow {
+                  transform: rotate(90deg);
+              }
+
+              #${aboutMeId} .aboutme-content {
+                  max-height: 0;
+                  overflow: hidden;
+                  padding: 0 20px;
+                  background-color: ${isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'};
+                  transition: all 0.3s ease;
+                  font-size: 1.2rem;
+                  line-height: 1.6;
+              }
+
+              #${aboutMeId} .aboutme-content.open {
+                  max-height: 200px;
+                  padding: 15px 20px;
+                  overflow-y: auto;
+              }
+
+              #${aboutMeId} .aboutme-content::-webkit-scrollbar {
+                  width: 6px;
+              }
+
+              #${aboutMeId} .aboutme-content::-webkit-scrollbar-track {
+                  background: ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                  border-radius: 3px;
+              }
+
+              #${aboutMeId} .aboutme-content::-webkit-scrollbar-thumb {
+                  background: ${isDarkMode ? '#ffa1b8' : '#ff4c6d'};
+                  border-radius: 3px;
+              }
+
+              #${aboutMeId} .aboutme-content::-webkit-scrollbar-thumb:hover {
+                  background: ${isDarkMode ? '#ff7f91' : '#ff4c6d'};
+              }
+          `;
       }
 
       function handleSocialsClick() {
