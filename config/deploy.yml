@@ -60,6 +60,7 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  clear-cache: app exec --reuse "bin/rails runner 'Rails.cache.delete(\"github_commits\")'"
 
 
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
@@ -72,10 +73,6 @@ volumes:
 # hitting 404 on in-flight requests. Combines all files from new and old
 # version inside the asset_path.
 asset_path: /rails/public/assets
-
-hooks:
-  post-deploy:
-    - app exec --reuse "bin/rails runner 'Rails.cache.delete(\"github_commits\")'"
 
 # Configure the image builder.
 builder:
