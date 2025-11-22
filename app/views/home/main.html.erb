@@ -7,11 +7,6 @@
   <meta name="title" content="Caroline's page :3">
 
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="audio" href="<%= asset_path 'click.mp3' %>">
-  <link rel="preload" as="audio" href="<%= asset_path 'close.mp3' %>">
-  <link rel="preload" as="audio" href="<%= asset_path 'light.mp3' %>">
-  <link rel="preload" as="audio" href="<%= asset_path 'dark.mp3' %>">
-  <link rel="preload" as="audio" href="<%= asset_path 'folder.mp3' %>">
   <%= favicon_link_tag 'tab.ico' %>
   <noscript><link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"></noscript>
 
@@ -85,12 +80,9 @@
       border: none;
       cursor: pointer;
       padding: 0;
-      display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
       width: 80px;
       height: auto;
       transition: transform 0.2s ease, color 0.3s ease;
@@ -279,7 +271,6 @@
       width: 2000px;
       height: 300px;
       position: fixed;
-      top: -300;
       pointer-events: none;
       z-index: 10;
       transform: translateY(300px)
@@ -297,16 +288,6 @@
       100% { opacity: 0; }
     }
     
-    .sparkle::after {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: white;
-      transform: rotate(90deg);
-      border-radius: 2px;
-    }
-
     body {
       display: flex;
       flex-direction: column;
@@ -331,21 +312,9 @@
       display: flex;
       flex-direction: column;
       z-index: 10;
-      left: 50vh;
-      top: 50vw;
       animation: pop-in 0.5s ease-out forwards;
       transform: scale(0);
       opacity: 0;
-    }
-
-    .window.show {
-      visibility: visible;
-      transform: scale(1);
-      opacity: 1;
-    }
-
-    .window.hide {
-      animation: shrink-out 0.5s ease-out forwards;
     }
 
     .window-title {
@@ -432,8 +401,7 @@
       height: 60px;
     }
 
-    button.toggle-btn:hover,
-    button.toggle-btn:focus:hover {
+    button.toggle-btn:hover {
       transform: scale(1.1);
     }
 
@@ -723,11 +691,12 @@
     </svg>
   </button>
 
-  <audio id="light-sound" src="<%= asset_path 'light.mp3' %>" preload="auto"></audio>
-  <audio id="dark-sound" src="<%= asset_path 'dark.mp3' %>" preload="auto"></audio>
-  <audio id="button-click-sound" src="<%= asset_path 'click.mp3' %>" preload="auto"></audio>
-  <audio id="close-sound" src="<%= asset_path 'close.mp3' %>" preload="auto"></audio>
-  <audio id="folder-sound" src="<%= asset_path 'folder.mp3' %>" preload="auto"></audio>
+  <audio id="light-sound" src="<%= asset_path 'light.ogg' %>" preload="auto"></audio>
+  <audio id="dark-sound" src="<%= asset_path 'dark.ogg' %>" preload="auto"></audio>
+  <audio id="button-click-sound" src="<%= asset_path 'click.ogg' %>" preload="auto"></audio>
+  <audio id="close-sound" src="<%= asset_path 'close.ogg' %>" preload="auto"></audio>
+  <audio id="folder-sound" src="<%= asset_path 'folder.ogg' %>" preload="auto"></audio>
+  <meta http-equiv="Cache-Control" content="public, max-age=3600">
 
   <script>
     function centerWindow() {
@@ -746,7 +715,6 @@
     const toggleBtn = document.querySelector('button.toggle-btn');
     const lightSound = document.getElementById("light-sound");
     const darkSound = document.getElementById("dark-sound");
-    const toggleSound = document.getElementById("toggle-sound");
     const buttonClickSound = document.getElementById("button-click-sound");
     const folderSound = document.getElementById("folder-sound")
     const closeSound = document.getElementById('close-sound');
@@ -793,6 +761,7 @@
     const windowBox = document.getElementById("draggable-window");
     const titleBar = document.getElementById("titlebar");
 
+    /* no clue why this specifically is why the home tab is movable */
     function clampWindowPosition(x, y, box) {
       const minX = 0;
       const minY = 0;
@@ -1128,13 +1097,6 @@
           dropdownElement.appendChild(contentDiv);
 
           return dropdownElement;
-      }
-
-      function updateAboutMeStyles(aboutMeId, isDarkMode) {
-          const styleElement = document.querySelector(`#${aboutMeId} style`);
-          if (styleElement) {
-              styleElement.textContent = generateAboutMeStyles(aboutMeId, isDarkMode);
-          }
       }
 
       function generateAboutMeStyles(aboutMeId) {
@@ -2255,6 +2217,8 @@
                       const imageContainer = document.createElement('div');
 
                       const img = document.createElement('img');
+                      img.setAttribute('loading', 'lazy');
+                      img.setAttribute('decoding', 'async');
                       img.src = image.src;
                       img.alt = image.alt;
                       img.setAttribute('draggable', 'false');
@@ -2462,6 +2426,10 @@
                               border: none;
                               outline: none;
                           `;
+                          enlargedImg.style.background = 'var(--aboutme-content-bg)';
+                          enlargedImg.onload = function() {
+                              this.style.background = 'transparent';
+                          };
 
                           const infoContainer = document.createElement('div');
                           infoContainer.style.cssText = `
@@ -2510,7 +2478,6 @@
                           `;
 
                           const captionStyle = document.createElement('style');
-                          captionStyle.className = 'caption-scrollbar-style';
                           captionStyle.textContent = `
                               .image-caption::-webkit-scrollbar {
                                   width: 6px;
@@ -2748,17 +2715,17 @@
 
       async function fetchGitHubCommits() {
           try {
-              console.log('Fetching from /changelog_data...');
+              // ('Fetching from /changelog_data...');
               const response = await fetch('/changelog_data');
               
-              console.log('Response status:', response.status);
+              // console.log('Response status:', response.status);
               
               if (!response.ok) {
                   throw new Error(`Server error: ${response.status}`);
               }
               
               const commits = await response.json();
-              console.log('Received commits:', commits);
+              // console.log('Received commits:', commits);
               
               const processedCommits = commits.map(commit => {
                   const sanitizeText = (text) => {
@@ -2775,7 +2742,7 @@
                   };
               });
               
-              console.log('Processed commits:', processedCommits);
+              // console.log('Processed commits:', processedCommits);
               return processedCommits;
               
           } catch (error) {
@@ -3126,7 +3093,7 @@
       galleryBtn.addEventListener('click', handleGalleryClick);
       changelogBtn.addEventListener('click', handleChangelogClick);
 
-      const NUM_SPARKLES = 60;
+      const NUM_SPARKLES = 100;
       const container = document.getElementById('sparkle-container');
 
       function createSparkle() {
@@ -3147,28 +3114,6 @@
 
       for (let i = 0; i < NUM_SPARKLES; i++) {
         createSparkle();
-      }
-
-      function cleanupResources() {
-          const existingWindows = document.querySelectorAll('.window.about-me, .window.socials, .window.gallery, .window.changelog');
-          existingWindows.forEach(window => {
-              if (!window.parentElement) {
-                  const observers = window._observers || [];
-                  observers.forEach(observer => observer.disconnect());
-              }
-          });
-      }
-
-      function setupWindowCleanup(windowElement) {
-          const closeBtn = windowElement.querySelector('button');
-          const originalClickHandler = closeBtn.onclick;
-          
-          closeBtn.onclick = function(e) {
-              cleanupResources();
-              if (originalClickHandler) {
-                  originalClickHandler.call(this, e);
-              }
-          };
       }
     });
   </script>
