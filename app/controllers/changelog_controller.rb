@@ -6,7 +6,7 @@ class ChangelogController < ApplicationController
       end
 
       filtered_commits = commits.select do |commit|
-        commit[:stats][:total] > 20
+        commit[:stats][:total] > 50
       end
 
       if filtered_commits.empty?
@@ -14,7 +14,7 @@ class ChangelogController < ApplicationController
           {
             date: Date.today.iso8601,
             title: "No Significant Changes",
-            details: [ "All recent changes were minor (20 lines or less)" ],
+            details: [ "All recent changes were minor (50 lines or less)" ],
             sha: "filtered",
             url: "https://github.com/carolinekks/carolinekks.dk",
             stats: { additions: 0, deletions: 0, total: 0 }
@@ -47,7 +47,7 @@ class ChangelogController < ApplicationController
       Rails.cache.write("github_commits", fresh_commits, expires_in: 1.hour)
 
       filtered_commits = fresh_commits.select do |commit|
-        commit[:stats][:total] > 20
+        commit[:stats][:total] > 50
       end
 
       if filtered_commits.empty?
@@ -55,7 +55,7 @@ class ChangelogController < ApplicationController
           {
             date: Date.today.iso8601,
             title: "No Significant Changes",
-            details: [ "All recent changes were minor (20 lines or less)" ],
+            details: [ "All recent changes were minor (50 lines or less)" ],
             sha: "filtered",
             url: "https://github.com/carolinekks/carolinekks.dk",
             stats: { additions: 0, deletions: 0, total: 0 }

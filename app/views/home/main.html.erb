@@ -147,6 +147,16 @@
       margin-top: -106px;
     }
 
+    .about-me img,
+    .socials img,
+    .changelog img {
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      pointer-events: none !important;
+    }
+
     .waves-container {
       position: fixed;
       bottom: -120px;
@@ -318,7 +328,7 @@
     }
 
     .window-title {
-      cursor: default;
+      cursor: grab;
       background-color: rgb(88, 83, 86);
       color: white;
       padding: 10px 16px;
@@ -501,12 +511,35 @@
 
     .folder-content-view img,
     .enlarged-view img {
-        pointer-events: auto !important;
-        -webkit-user-select: auto !important;
-        user-select: auto !important;
         -webkit-user-drag: none !important;
         user-drag: none !important;
-        -webkit-touch-callout: default !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+        pointer-events: auto !important;
+    }
+
+    .enlarged-view img[draggable="false"] {
+        pointer-events: auto !important;
+    }
+
+    .folder-content-view {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .enlarged-view {
+        background: inherit !important;
+        z-index: 20 !important;
+    }
+
+    .folder-content-view > *:not(.enlarged-view) {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .enlarged-view {
+        transition: opacity 0.3s ease, transform 0.3s ease !important;
     }
 
     body.dark-mode .gallery-main-view img[src*="folder.svg"] {
@@ -530,6 +563,27 @@
     .changelog-content {
       color: var(--app-text) !important;
       transition: color .3s ease;
+    }
+
+    .window.changelog .window-body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .window.changelog .window-body > div:only-child {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    .window.changelog .window-body:has(> div:only-child) {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
     .gallery .close-button {
@@ -591,6 +645,7 @@
         cursor: pointer;
         transition: transform 0.3s ease;
         background: var(--aboutme-content-bg);
+        cursor: zoom-in !important;
     }
     
     .folder-content-view .image-grid img {
@@ -599,6 +654,7 @@
         object-fit: cover !important;
         display: block !important;
         transition: transform 0.3s ease;
+        cursor: zoom-in !important;
     }
 
   </style>
@@ -898,7 +954,7 @@
               padding: 10px 16px; 
               font-weight: bold; 
               font-size: 1.2rem; 
-              cursor: default; 
+              cursor: grab; 
               user-select: none;
           `;
 
@@ -979,6 +1035,7 @@
 
           const aboutMeImage = document.createElement('img');
           aboutMeImage.src = '<%= asset_path "aboutme.webp" %>'; 
+          aboutMeImage.setAttribute('draggable', 'false');
           aboutMeImage.style.cssText = `
               width: 200px;
               height: 200px;
@@ -1027,6 +1084,10 @@
               {
                   title: "What are some of your interests?",
                   content: `• Marine biology <br> • Combinatorics & Number Theory <br> • RPGS & Roguelites <br> • Fishing <br> • Diving`
+              },
+              {
+                  title: "Fun facts about me!",
+                  content: `• I speak both English and Danish <br> • I am an unlabled type of colorblind <br> • I am autistic and schizotypal <br> • My personality types are INFP-T and 6w5`
               }
           ];
 
@@ -1265,7 +1326,7 @@
           padding: 10px 16px; 
           font-weight: bold; 
           font-size: 1.2rem; 
-          cursor: default; 
+          cursor: grab; 
           user-select: none;
         `;
 
@@ -1298,7 +1359,7 @@
         steamButton.style.cssText = `
           background: transparent;
           border: none;
-          cursor: pointer;
+          cursor: alias;
           padding: 0;
           transition: transform 0.2s ease;
           border-radius: 50%;
@@ -1309,6 +1370,7 @@
 
         const steamImg = document.createElement('img');
         steamImg.src = '<%= asset_path "steammain.webp" %>';
+        steamImg.setAttribute('draggable', 'false');
         steamImg.style.cssText = `
           width: 100%;
           height: 100%;
@@ -1341,7 +1403,7 @@
         steamButton2.style.cssText = `
             background: transparent;
             border: none;
-            cursor: pointer;
+            cursor: alias;
             padding: 0;
             transition: transform 0.2s ease;
             border-radius: 50%;
@@ -1352,6 +1414,7 @@
 
         const steamImg2 = document.createElement('img');
         steamImg2.src = '<%= asset_path "steam2.webp" %>';
+        steamImg2.setAttribute('draggable', 'false');
         steamImg2.style.cssText = `
             width: 100%;
             height: 100%;
@@ -1384,7 +1447,7 @@
         discordButton.style.cssText = `
             background: transparent;
             border: none;
-            cursor: pointer;
+            cursor: alias;
             padding: 0;
             transition: transform 0.2s ease;
             border-radius: 50%;
@@ -1395,6 +1458,7 @@
 
         const discordImg = document.createElement('img');
         discordImg.src = '<%= asset_path "discord.webp" %>';
+        discordImg.setAttribute('draggable', 'false');
         discordImg.style.cssText = `
             width: 100%;
             height: 100%;
@@ -1427,7 +1491,7 @@
         lastfmButton.style.cssText = `
             background: transparent;
             border: none;
-            cursor: pointer;
+            cursor: alias;
             padding: 0;
             transition: transform 0.2s ease;
             border-radius: 50%;
@@ -1438,6 +1502,7 @@
 
         const lastfmImg = document.createElement('img');
         lastfmImg.src = '<%= asset_path "lastfm.webp" %>';
+        lastfmImg.setAttribute('draggable', 'false');
         lastfmImg.style.cssText = `
             width: 100%;
             height: 100%;
@@ -1470,7 +1535,7 @@
         instagramButton.style.cssText = `
             background: transparent;
             border: none;
-            cursor: pointer;
+            cursor: alias;
             padding: 0;
             transition: transform 0.2s ease;
             border-radius: 50%;
@@ -1481,6 +1546,7 @@
 
         const instagramImg = document.createElement('img');
         instagramImg.src = '<%= asset_path "insta.webp" %>';
+        instagramImg.setAttribute('draggable', 'false');
         instagramImg.style.cssText = `
             width: 100%;
             height: 100%;
@@ -1513,7 +1579,7 @@
         githubButton.style.cssText = `
             background: transparent;
             border: none;
-            cursor: pointer;
+            cursor: alias;
             padding: 0;
             transition: transform 0.2s ease;
             border-radius: 50%;
@@ -1524,6 +1590,7 @@
 
         const githubImg = document.createElement('img');
         githubImg.src = '<%= asset_path "github.webp" %>';
+        githubImg.setAttribute('draggable', 'false');
         githubImg.style.cssText = `
             width: 100%;
             height: 100%;
@@ -1646,7 +1713,7 @@
                 padding: 10px 16px;
                 font-weight: bold;
                 font-size: 1.2rem;
-                cursor: default;
+                cursor: grab;
                 user-select: none;
             `;
 
@@ -1910,7 +1977,7 @@
               padding: 10px 16px; 
               font-weight: bold; 
               font-size: 1.2rem; 
-              cursor: default; 
+              cursor: grab; 
               user-select: none;
           `;
 
@@ -2296,217 +2363,193 @@
                       const folderSubtitle = folderView.querySelector('.sub-text');
                       const backButton = folderView.querySelector('button');
                       
+                      const enlargedView = document.createElement('div');
+                      enlargedView.className = 'enlarged-view';
+                      enlargedView.style.cssText = `
+                          position: absolute;
+                          top: 0;
+                          left: 0;
+                          width: 100%;
+                          height: 100%;
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-between;
+                          padding: 40px;
+                          opacity: 0;
+                          transform: scale(0.95);
+                          transition: opacity 0.3s ease, transform 0.3s ease;
+                          box-sizing: border-box;
+                          z-index: 20;
+                          background: inherit;
+                      `;
+
+                      const backToFolderButton = document.createElement('button');
+                      backToFolderButton.style.cssText = `
+                          position: absolute;
+                          top: 20px;
+                          left: 20px;
+                          background: transparent;
+                          border: none;
+                          cursor: pointer;
+                          padding: 10px 20px;
+                          display: flex;
+                          align-items: center;
+                          gap: 10px;
+                          transition: transform 0.2s ease;
+                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                          font-size: 1.1rem;
+                          border-radius: 5px;
+                          z-index: 21;
+                      `;
+
+                      const backToFolderArrow = document.createElement('span');
+                      backToFolderArrow.textContent = '←';
+                      backToFolderArrow.style.cssText = `font-size: 1.3rem;`;
+
+                      const backToFolderText = document.createElement('span');
+                      backToFolderText.textContent = 'Back to Folder';
+
+                      backToFolderButton.appendChild(backToFolderArrow);
+                      backToFolderButton.appendChild(backToFolderText);
+
+                      let backToFolderClickInProgress = false;
+                      backToFolderButton.addEventListener('click', () => {
+                          if (backToFolderClickInProgress) return;
+                          backToFolderClickInProgress = true;
+                          
+                          folderSound.volume = 0.3;
+                          folderSound.currentTime = 0;
+                          folderSound.play();
+
+                          enlargedView.style.opacity = '0';
+                          enlargedView.style.transform = 'scale(0.95)';
+                          
+                          setTimeout(() => {
+                              enlargedView.remove();
+                              
+                              folderTitle.style.display = 'block';
+                              folderSubtitle.style.display = 'block';
+                              backButton.style.display = 'block';
+                              imageGrid.style.display = 'grid';
+                              
+                              setTimeout(() => {
+                                  folderTitle.style.opacity = '1';
+                                  folderSubtitle.style.opacity = '1';
+                                  backButton.style.opacity = '1';
+                                  imageGrid.style.opacity = '1';
+                                  imageGrid.style.transform = 'scale(1)';
+                                  backToFolderClickInProgress = false;
+                              }, 50);
+                          }, 300);
+                      });
+
+                      backToFolderButton.addEventListener('mouseover', () => {
+                          if (!backToFolderClickInProgress) {
+                              backToFolderButton.style.transform = 'scale(1.05)';
+                              backToFolderButton.style.backgroundColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                          }
+                      });
+
+                      backToFolderButton.addEventListener('mouseout', () => {
+                          backToFolderButton.style.transform = 'scale(1)';
+                          backToFolderButton.style.backgroundColor = 'transparent';
+                      });
+
+                      const imageContainer = document.createElement('div');
+                      imageContainer.style.cssText = `
+                          flex: 0 0 65%;
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                          height: 100%;
+                          padding: 20px;
+                          box-sizing: border-box;
+                      `;
+
+                      const enlargedImg = document.createElement('img');
+                      enlargedImg.src = image.src;
+                      enlargedImg.alt = image.alt;
+                      enlargedImg.style.cssText = `
+                          max-width: 85%; 
+                          max-height: 75%;
+                          object-fit: contain;
+                          border-radius: 10px;
+                          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+                          display: block;
+                      `;
+                      enlargedImg.style.background = 'var(--aboutme-content-bg)';
+                      enlargedImg.onload = function() {
+                          this.style.background = 'transparent';
+                      };
+                      enlargedImg.setAttribute('draggable', 'false');
+                      enlargedImg.addEventListener('dragstart', (e) => e.preventDefault());
+
+                      const infoContainer = document.createElement('div');
+                      infoContainer.style.cssText = `
+                          flex: 0 0 35%;
+                          display: flex;
+                          flex-direction: column;
+                          justify-content: center;
+                          height: 100%;
+                          padding: 40px 20px;
+                          box-sizing: border-box;
+                      `;
+
+                      const captionTitle = document.createElement('div');
+                      captionTitle.textContent = image.caption;
+                      captionTitle.style.cssText = `
+                          font-size: 2.2rem;
+                          font-weight: bold;
+                          font-style: italic;
+                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                          margin-bottom: 10px;
+                          opacity: 0.9;
+                          line-height: 1.2;
+                          text-align: left;
+                          width: 100%;
+                      `;
+
+                      const caption = document.createElement('div');
+                      caption.textContent = image.alt;
+                      caption.style.cssText = `
+                          font-size: 1.3rem;
+                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
+                          line-height: 1.4;
+                          max-height: 150px;
+                          overflow-y: auto;
+                          padding-right: 10px;
+                          margin-top: 5px;
+                          text-align: left;
+                          width: 100%;
+                      `;
+
+                      imageContainer.appendChild(enlargedImg);
+                      infoContainer.appendChild(captionTitle);
+                      infoContainer.appendChild(caption);
+
+                      enlargedView.appendChild(backToFolderButton);
+                      enlargedView.appendChild(imageContainer);
+                      enlargedView.appendChild(infoContainer);
+                      folderView.appendChild(enlargedView);
+
                       folderTitle.style.opacity = '0';
                       folderSubtitle.style.opacity = '0';
                       backButton.style.opacity = '0';
                       imageGrid.style.opacity = '0';
                       imageGrid.style.transform = 'scale(0.9)';
-                      
+
                       setTimeout(() => {
-                          folderTitle.style.display = 'none';
-                          folderSubtitle.style.display = 'none';
-                          backButton.style.display = 'none';
-                          imageGrid.style.display = 'none';
-
-                          const enlargedView = document.createElement('div');
-                          enlargedView.className = 'enlarged-view';
-                          enlargedView.style.cssText = `
-                              position: absolute;
-                              top: 0;
-                              left: 0;
-                              width: 100%;
-                              height: 100%;
-                              display: flex;
-                              align-items: center;
-                              justify-content: space-between;
-                              padding: 40px;
-                              opacity: 0;
-                              transform: scale(0.9);
-                              transition: opacity 0.3s ease, transform 0.3s ease;
-                              box-sizing: border-box;
-                          `;
-
-                          const backToFolderButton = document.createElement('button');
-                          backToFolderButton.style.cssText = `
-                              position: absolute;
-                              top: 20px;
-                              left: 20px;
-                              background: transparent;
-                              border: none;
-                              cursor: pointer;
-                              padding: 10px 20px;
-                              display: flex;
-                              align-items: center;
-                              gap: 10px;
-                              transition: transform 0.2s ease;
-                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
-                              font-size: 1.1rem;
-                              border-radius: 5px;
-                              z-index: 10;
-                          `;
-
-                          const backToFolderArrow = document.createElement('span');
-                          backToFolderArrow.textContent = '←';
-                          backToFolderArrow.style.cssText = `
-                              font-size: 1.3rem;
-                          `;
-
-                          const backToFolderText = document.createElement('span');
-                          backToFolderText.textContent = 'Back to Folder';
-
-                          backToFolderButton.appendChild(backToFolderArrow);
-                          backToFolderButton.appendChild(backToFolderText);
-
-                          let backToFolderClickInProgress = false;
-                          backToFolderButton.addEventListener('click', () => {
-                              if (backToFolderClickInProgress || enlargedView.style.opacity === '0') return;
-                              backToFolderClickInProgress = true;
-                              
-                              folderSound.volume = 0.3;
-                              folderSound.currentTime = 0;
-                              folderSound.play();
-
-                              enlargedView.style.opacity = '0';
-                              enlargedView.style.transform = 'scale(0.9)';
-                              
-                              setTimeout(() => {
-                                  enlargedView.remove();
-                                  
-                                  folderTitle.style.display = 'block';
-                                  folderSubtitle.style.display = 'block';
-                                  backButton.style.display = 'block';
-                                  imageGrid.style.display = 'grid';
-                                  
-                                  setTimeout(() => {
-                                      folderTitle.style.opacity = '1';
-                                      folderSubtitle.style.opacity = '1';
-                                      backButton.style.opacity = '1';
-                                      imageGrid.style.opacity = '1';
-                                      imageGrid.style.transform = 'scale(1)';
-                                      backToFolderClickInProgress = false;
-                                  }, 50);
-                              }, 300);
-                          });
-
-                          backToFolderButton.addEventListener('mouseover', () => {
-                              if (!backToFolderClickInProgress) {
-                                  backToFolderButton.style.transform = 'scale(1.05)';
-                                  backToFolderButton.style.backgroundColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
-                              }
-                          });
-
-                          backToFolderButton.addEventListener('mouseout', () => {
-                              backToFolderButton.style.transform = 'scale(1)';
-                              backToFolderButton.style.backgroundColor = 'transparent';
-                          });
-
-                          const imageContainer = document.createElement('div');
-                          imageContainer.style.cssText = `
-                              flex: 0 0 65%;
-                              display: flex;
-                              flex-direction: column;
-                              align-items: center;
-                              justify-content: center;
-                              height: 100%;
-                              padding: 20px;
-                              box-sizing: border-box;
-                          `;
-
-                          const enlargedImg = document.createElement('img');
-                          enlargedImg.src = image.src;
-                          enlargedImg.alt = image.alt;
-                          /* img size */
-                          enlargedImg.style.cssText = `
-                              max-width: 85%; 
-                              max-height: 75%;
-                              object-fit: contain;
-                              border-radius: 10px;
-                              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-                              display: block;
-                              border: none;
-                              outline: none;
-                          `;
-                          enlargedImg.style.background = 'var(--aboutme-content-bg)';
-                          enlargedImg.onload = function() {
-                              this.style.background = 'transparent';
-                          };
-
-                          const infoContainer = document.createElement('div');
-                          infoContainer.style.cssText = `
-                              flex: 0 0 35%;
-                              display: flex;
-                              flex-direction: column;
-                              justify-content: center;
-                              height: 100%;
-                              padding: 40px 20px;
-                              box-sizing: border-box;
-                          `;
-
-                          const captionTitle = document.createElement('div');
-                          captionTitle.textContent = image.caption;
-                          captionTitle.className = 'caption-title';
-                          captionTitle.style.cssText = `
-                              font-size: 2.2rem;
-                              font-weight: bold;
-                              font-style: italic;
-                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
-                              margin-bottom: 10px;
-                              opacity: 0.9;
-                              line-height: 1.2;
-                              text-align: left;
-                              width: 100%;
-                              padding-left: 0;
-                          `;
-
-                          const caption = document.createElement('div');
-                          caption.classList.add('folder-caption', 'theme-text');
-                          caption.textContent = image.alt;
-                          caption.className = 'image-caption';
-                          caption.style.cssText = `
-                              font-size: 1.3rem;
-                              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
-                              line-height: 1.4;
-                              word-wrap: break-word;
-                              overflow-wrap: break-word;
-                              max-height: 150px;
-                              overflow-y: auto;
-                              padding-right: 10px;
-                              margin-top: 5px;
-                              text-align: left;
-                              width: 100%;
-                              padding-left: 0;
-                          `;
-
-                          const captionStyle = document.createElement('style');
-                          captionStyle.textContent = `
-                              .image-caption::-webkit-scrollbar {
-                                  width: 6px;
-                              }
-                              .image-caption::-webkit-scrollbar-track {
-                                  background: ${document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
-                                  border-radius: 3px;
-                              }
-                              .image-caption::-webkit-scrollbar-thumb {
-                                  background: ${document.body.classList.contains('dark-mode') ? '#ffa1b8' : '#ff4c6d'};
-                                  border-radius: 3px;
-                              }
-                          `;
-                          enlargedView.appendChild(captionStyle);
-
-                          imageContainer.appendChild(enlargedImg);
-                          infoContainer.appendChild(captionTitle);
-                          infoContainer.appendChild(caption);
-
-                          enlargedView.appendChild(backToFolderButton);
-                          enlargedView.appendChild(imageContainer);
-                          enlargedView.appendChild(infoContainer);
-                          folderView.appendChild(enlargedView);
-
+                          enlargedView.style.opacity = '1';
+                          enlargedView.style.transform = 'scale(1)';
+                          
                           setTimeout(() => {
-                              enlargedView.style.opacity = '1';
-                              enlargedView.style.transform = 'scale(1)';
-                          }, 50);
-                      }, 300);
+                              folderTitle.style.display = 'none';
+                              folderSubtitle.style.display = 'none';
+                              backButton.style.display = 'none';
+                              imageGrid.style.display = 'none';
+                          }, 300);
+                      }, 150);
                   }
               }, 400);
           }
@@ -2632,7 +2675,7 @@
               padding: 10px 16px; 
               font-weight: bold; 
               font-size: 1.2rem; 
-              cursor: default; 
+              cursor: grab; 
               user-select: none;
           `;
 
