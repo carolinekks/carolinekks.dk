@@ -48,6 +48,8 @@ Rails.application.configure do
 
   config.hosts << "carolinekks.dk"
   config.hosts << "www.carolinekks.dk"
+  config.hosts << "carolinekks-dk.onrender.com"
+  config.hosts << /.+\.onrender\.com/
 
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :memory_store, { size: 64.megabytes }
