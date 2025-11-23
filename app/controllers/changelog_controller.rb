@@ -3,10 +3,14 @@ class ChangelogController < ApplicationController
 
   def index
     begin
-      cache_key = "github_commits_#{Time.now.strftime('%Y%m%d%H%M')[0..-2]}0"
+      cache_key = "github_commits_v2"
+
       commits = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+        Rails.logger.info "Cache miss - fetching fresh commits from GitHub"
         fetch_github_commits
       end
+
+      Rails.logger.info "Using cached commits (#{commits.size} total)"
 
       filtered_commits = commits.select do |commit|
         commit[:stats][:total] > 50
@@ -43,12 +47,11 @@ class ChangelogController < ApplicationController
 
   def refresh
     begin
-      Rails.cache.delete_matched("github_commits_*")
+      Rails.cache.delete("github_commits_v2")
 
       fresh_commits = fetch_github_commits
 
-      cache_key = "github_commits_#{Time.now.strftime('%Y%m%d%H%M')[0..-2]}0"
-      Rails.cache.write(cache_key, fresh_commits, expires_in: 10.minutes)
+      Rails.cache.write("github_commits_v2", fresh_commits, expires_in: 10.minutes)
 
       filtered_commits = fresh_commits.select do |commit|
         commit[:stats][:total] > 50
@@ -82,7 +85,7 @@ class ChangelogController < ApplicationController
 
   def webhook
     if valid_github_webhook?(request)
-      Rails.cache.delete_matched("github_commits_*")
+      Rails.cache.delete("github_commits_v2")
       Rails.logger.info "GitHub webhook received - cleared changelog cache"
 
       head :ok
