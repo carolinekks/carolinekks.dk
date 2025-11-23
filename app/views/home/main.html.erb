@@ -1249,6 +1249,8 @@
         buttonClickSound.play();
         if (socialsBlock) return;
 
+        let discordInfoWindow = null;
+
         const newBlock = document.createElement('div');
         newBlock.className = 'window socials';
         newBlock.style.cssText = `
@@ -1654,6 +1656,8 @@
         githubContainer.appendChild(githubText);
 
         discordButton.addEventListener('click', () => {
+            if (discordInfoWindow) return;
+
             buttonClickSound.volume = 0.3;
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
@@ -1676,6 +1680,8 @@
                 transform: scale(0);
                 opacity: 0;
             `;
+
+            discordInfoWindow = discordWindow;
 
             const discordCloseButton = document.createElement('button');
             discordCloseButton.textContent = '✖';
@@ -1701,6 +1707,7 @@
               discordWindow.style.animation = 'pop-out 0.5s ease-out forwards';
               setTimeout(() => {
                   discordWindow.remove();
+                  discordInfoWindow = null;
               }, 500);
             });
 
@@ -2272,8 +2279,8 @@
                       'gobi': [
                           { src: '<%= asset_path "gobi/photo5.webp" %>', caption: 'he does NOT fw my pumpkin :(', alt: '10/26/25' },
                           { src: '<%= asset_path "gobi/photo4.webp" %>', caption: 'On the way to the beach', alt: '08/28/25' },
-                          { src: '<%= asset_path "gobi/photo3.webp" %>', caption: 'The eeper', alt: '04/29/25' },
-                          { src: '<%= asset_path "gobi/photo2.webp" %>', caption: 'So cozy', alt: '04/12/25' },
+                          { src: '<%= asset_path "gobi/photo3.webp" %>', caption: 'So cozy', alt: '04/29/25' },
+                          { src: '<%= asset_path "gobi/photo2.webp" %>', caption: 'The eeper', alt: '04/12/25' },
                           { src: '<%= asset_path "gobi/photo1.webp" %>', caption: 'The yapper', alt: '21/02/25' }
                       ]
                   };
@@ -2495,14 +2502,14 @@
                           padding: 40px 20px;
                           box-sizing: border-box;
                       `;
-
+                      
                       const captionTitle = document.createElement('div');
                       captionTitle.textContent = image.caption;
+                      captionTitle.classList.add('changelog-title', 'theme-text');
                       captionTitle.style.cssText = `
                           font-size: 2.2rem;
                           font-weight: bold;
                           font-style: italic;
-                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
                           margin-bottom: 10px;
                           opacity: 0.9;
                           line-height: 1.2;
@@ -2512,9 +2519,9 @@
 
                       const caption = document.createElement('div');
                       caption.textContent = image.alt;
+                      caption.classList.add('changelog-content', 'theme-text');
                       caption.style.cssText = `
                           font-size: 1.3rem;
-                          color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
                           line-height: 1.4;
                           max-height: 150px;
                           overflow-y: auto;

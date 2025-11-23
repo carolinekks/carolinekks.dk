@@ -1,7 +1,10 @@
 class ChangelogController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [ :index, :refresh, :webhook ]
+
   def index
     begin
-      commits = Rails.cache.fetch("github_commits", expires_in: 1.hour) do
+      cache_key = "github_commits_#{Time.now.strftime('%Y%m%d%H%M')[0..-2]}0"
+      commits = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
         fetch_github_commits
       end
 
@@ -40,11 +43,12 @@ class ChangelogController < ApplicationController
 
   def refresh
     begin
-      Rails.cache.delete("github_commits")
+      Rails.cache.delete_matched("github_commits_*")
 
       fresh_commits = fetch_github_commits
 
-      Rails.cache.write("github_commits", fresh_commits, expires_in: 1.hour)
+      cache_key = "github_commits_#{Time.now.strftime('%Y%m%d%H%M')[0..-2]}0"
+      Rails.cache.write(cache_key, fresh_commits, expires_in: 10.minutes)
 
       filtered_commits = fresh_commits.select do |commit|
         commit[:stats][:total] > 50
@@ -76,7 +80,42 @@ class ChangelogController < ApplicationController
     end
   end
 
+  def webhook
+    if valid_github_webhook?(request)
+      Rails.cache.delete_matched("github_commits_*")
+      Rails.logger.info "GitHub webhook received - cleared changelog cache"
+
+      head :ok
+    else
+      Rails.logger.warn "Invalid GitHub webhook attempt - signature verification failed"
+      head :unauthorized
+    end
+  end
+
   private
+
+  def valid_github_webhook?(request)
+    signature = request.headers["X-Hub-Signature-256"]
+
+    return false unless signature
+
+    payload_body = request.body.read
+
+    secret = Rails.application.credentials.github_webhook_secret
+
+    return false unless secret
+
+    expected_signature = "sha256=" + OpenSSL::HMAC.hexdigest(
+      OpenSSL::Digest.new("sha256"),
+      secret,
+      payload_body
+    )
+
+    Rack::Utils.secure_compare(signature, expected_signature)
+  rescue => e
+    Rails.logger.error "Webhook validation error: #{e.message}"
+    false
+  end
 
   def fetch_github_commits
     require "open-uri"
