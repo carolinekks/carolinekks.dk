@@ -127,11 +127,16 @@ class ChangelogController < ApplicationController
     Rails.logger.info "Fetching commits from: #{url}"
 
     begin
-      response = URI.open(url,
+      headers = {
         "User-Agent" => "carolinekks.dk-Rails-App",
-        "Accept" => "application/vnd.github.v3+json",
-        :read_timeout => 10
-      ).read
+        "Accept" => "application/vnd.github.v3+json"
+      }
+
+      if ENV["GITHUB_ACCESS_TOKEN"]
+        headers["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
+      end
+
+      response = URI.open(url, headers, read_timeout: 10).read
 
       commits_data = JSON.parse(response)
       Rails.logger.info "Successfully parsed #{commits_data.size} commits"
@@ -155,23 +160,36 @@ class ChangelogController < ApplicationController
 
     rescue OpenURI::HTTPError => e
       Rails.logger.error "HTTP Error: #{e.message}"
-      [
-        {
-          date: Date.today.strftime("%Y-%m-%d"),
-          title: "HTTP Error #{e.io.status[0]}",
-          details: [ "GitHub API returned an error.", "Message: #{e.message}" ],
-          sha: "http_error",
-          url: "https://github.com/#{repo_path}",
-          stats: { additions: 0, deletions: 0, total: 0 }
-        }
-      ]
+      if e.message.include?("403")
+        [
+          {
+            date: Date.today.strftime("%Y-%m-%d"),
+            title: "GitHub Rate Limit",
+            details: [ "Even with authentication, rate limit reached.", "This should resolve soon." ],
+            sha: "rate_limit",
+            url: "https://github.com/#{repo_path}",
+            stats: { additions: 0, deletions: 0, total: 0 }
+          }
+        ]
+      else
+        [
+          {
+            date: Date.today.strftime("%Y-%m-%d"),
+            title: "HTTP Error #{e.io.status[0]}",
+            details: [ "GitHub API returned an error.", "Message: #{e.message}" ],
+            sha: "http_error",
+            url: "https://github.com/#{repo_path}",
+            stats: { additions: 0, deletions: 0, total: 0 }
+          }
+        ]
+      end
     rescue => e
       Rails.logger.error "Error in fetch_github_commits: #{e.message}"
       [
         {
           date: Date.today.strftime("%Y-%m-%d"),
           title: "Connection Issue",
-          details: [ "Error: #{e.message}", "This usually works in production." ],
+          details: [ "Error: #{e.message}" ],
           sha: "error",
           url: "https://github.com/#{repo_path}",
           stats: { additions: 0, deletions: 0, total: 0 }
@@ -231,11 +249,16 @@ class ChangelogController < ApplicationController
     commit_url = "https://api.github.com/repos/#{repo_path}/commits/#{commit_sha}"
 
     begin
-      detailed_response = URI.open(commit_url,
+      headers = {
         "User-Agent" => "carolinekks.dk-Rails-App",
-        "Accept" => "application/vnd.github.v3+json",
-        :read_timeout => 5
-      ).read
+        "Accept" => "application/vnd.github.v3+json"
+      }
+
+      if ENV["GITHUB_ACCESS_TOKEN"]
+        headers["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
+      end
+
+      detailed_response = URI.open(commit_url, headers, read_timeout: 5).read
 
       detailed_commit = JSON.parse(detailed_response)
       stats = detailed_commit["stats"] || {}
