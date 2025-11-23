@@ -150,6 +150,11 @@ class ChangelogController < ApplicationController
         commits_data = JSON.parse(response.body)
         Rails.logger.info "Successfully parsed #{commits_data.size} commits"
 
+        if commits_data.any?
+          Rails.logger.info "First commit structure: #{commits_data.first.keys}"
+          Rails.logger.info "First commit author: #{commits_data.first['commit']['author']}"
+        end
+
         if commits_data.empty?
           return [
             {
@@ -187,7 +192,7 @@ class ChangelogController < ApplicationController
         {
           date: Date.today.strftime("%Y-%m-%d"),
           title: "Connection Issue",
-          details: [ "Error: #{e.message}" ],
+          details: [ "Error fetching commits from GitHub API" ],
           sha: "error",
           url: "https://github.com/#{repo_path}",
           stats: { additions: 0, deletions: 0, total: 0 }
@@ -217,7 +222,7 @@ class ChangelogController < ApplicationController
     formatted_date = if date_string
       begin
         DateTime.parse(date_string).strftime("%Y-%m-%d")
-      rescue
+      rescue StandardError
         Date.today.strftime("%Y-%m-%d")
       end
     else
