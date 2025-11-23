@@ -118,7 +118,8 @@ class ChangelogController < ApplicationController
   end
 
   def fetch_github_commits
-    require "open-uri"
+    require "net/http"
+    require "uri"
     require "json"
 
     repo_path = "carolinekks/carolinekks.dk"
@@ -127,64 +128,58 @@ class ChangelogController < ApplicationController
     Rails.logger.info "Fetching commits from: #{url}"
 
     begin
-      headers = {
-        "User-Agent" => "carolinekks.dk-Rails-App",
-        "Accept" => "application/vnd.github.v3+json"
-      }
+      uri = URI.parse(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
 
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request["User-Agent"] = "carolinekks.dk-Rails-App"
+      request["Accept"] = "application/vnd.github.v3+json"
+
+      # Github api
       if ENV["GITHUB_ACCESS_TOKEN"]
-        headers["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
+        request["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
       end
 
-      response = URI.open(url, headers, read_timeout: 10).read
+      response = http.request(request)
 
-      commits_data = JSON.parse(response)
-      Rails.logger.info "Successfully parsed #{commits_data.size} commits"
+      if response.code == "200"
+        commits_data = JSON.parse(response.body)
+        Rails.logger.info "Successfully parsed #{commits_data.size} commits"
 
-      if commits_data.empty?
-        return [
-          {
-            date: Date.today.strftime("%Y-%m-%d"),
-            title: "No Commits Found",
-            details: [ "The repository exists but has no commits yet." ],
-            sha: "empty",
-            url: "https://github.com/#{repo_path}",
-            stats: { additions: 0, deletions: 0, total: 0 }
-          }
-        ]
-      end
+        if commits_data.empty?
+          return [
+            {
+              date: Date.today.strftime("%Y-%m-%d"),
+              title: "No Commits Found",
+              details: [ "The repository exists but has no commits yet." ],
+              sha: "empty",
+              url: "https://github.com/#{repo_path}",
+              stats: { additions: 0, deletions: 0, total: 0 }
+            }
+          ]
+        end
 
-      commits_data.map do |commit|
-        process_commit_with_stats(commit, repo_path)
-      end
-
-    rescue OpenURI::HTTPError => e
-      Rails.logger.error "HTTP Error: #{e.message}"
-      if e.message.include?("403")
-        [
-          {
-            date: Date.today.strftime("%Y-%m-%d"),
-            title: "GitHub Rate Limit",
-            details: [ "Even with authentication, rate limit reached.", "This should resolve soon." ],
-            sha: "rate_limit",
-            url: "https://github.com/#{repo_path}",
-            stats: { additions: 0, deletions: 0, total: 0 }
-          }
-        ]
+        commits_data.map do |commit|
+          process_commit_with_stats(commit, repo_path)
+        end
       else
+        Rails.logger.error "GitHub API Error: #{response.code} - #{response.body}"
         [
           {
             date: Date.today.strftime("%Y-%m-%d"),
-            title: "HTTP Error #{e.io.status[0]}",
-            details: [ "GitHub API returned an error.", "Message: #{e.message}" ],
-            sha: "http_error",
+            title: "GitHub API Error #{response.code}",
+            details: [ "Failed to fetch commits from GitHub API." ],
+            sha: "api_error",
             url: "https://github.com/#{repo_path}",
             stats: { additions: 0, deletions: 0, total: 0 }
           }
         ]
       end
+
     rescue => e
       Rails.logger.error "Error in fetch_github_commits: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
       [
         {
           date: Date.today.strftime("%Y-%m-%d"),
@@ -249,25 +244,34 @@ class ChangelogController < ApplicationController
     commit_url = "https://api.github.com/repos/#{repo_path}/commits/#{commit_sha}"
 
     begin
-      headers = {
-        "User-Agent" => "carolinekks.dk-Rails-App",
-        "Accept" => "application/vnd.github.v3+json"
-      }
+      uri = URI.parse(commit_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request["User-Agent"] = "carolinekks.dk-Rails-App"
+      request["Accept"] = "application/vnd.github.v3+json"
 
       if ENV["GITHUB_ACCESS_TOKEN"]
-        headers["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
+        request["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
       end
 
-      detailed_response = URI.open(commit_url, headers, read_timeout: 5).read
+      response = http.request(request)
 
-      detailed_commit = JSON.parse(detailed_response)
-      stats = detailed_commit["stats"] || {}
+      if response.code == "200"
+        detailed_commit = JSON.parse(response.body)
+        stats = detailed_commit["stats"] || {}
 
-      {
-        additions: stats["additions"] || 0,
-        deletions: stats["deletions"] || 0,
-        total: stats["total"] || 0
-      }
+        {
+          additions: stats["additions"] || 0,
+          deletions: stats["deletions"] || 0,
+          total: stats["total"] || 0
+        }
+      else
+        Rails.logger.warn "Stats API Error for #{commit_sha}: #{response.code}"
+        { additions: 0, deletions: 0, total: 0 }
+      end
+
     rescue => e
       Rails.logger.warn "Could not fetch stats for commit #{commit_sha}: #{e.message}"
       { additions: 0, deletions: 0, total: 0 }
