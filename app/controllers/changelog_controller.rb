@@ -7,29 +7,12 @@ class ChangelogController < ApplicationController
 
       commits = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
         Rails.logger.info "Cache miss - fetching fresh commits from GitHub"
-        fetch_github_commits
+        fetch_github_commits_with_filter
       end
 
       Rails.logger.info "Using cached commits (#{commits.size} total)"
 
-      filtered_commits = commits.select do |commit|
-        commit[:stats][:total] > 50
-      end
-
-      if filtered_commits.empty?
-        filtered_commits = [
-          {
-            date: Date.today.iso8601,
-            title: "No Significant Changes",
-            details: [ "All recent changes were minor (50 lines or less)" ],
-            sha: "filtered",
-            url: "https://github.com/carolinekks/carolinekks.dk",
-            stats: { additions: 0, deletions: 0, total: 0 }
-          }
-        ]
-      end
-
-      render json: filtered_commits
+      render json: commits
     rescue => e
       Rails.logger.error "Changelog controller error: #{e.message}"
       render json: [
@@ -49,30 +32,13 @@ class ChangelogController < ApplicationController
     begin
       Rails.cache.delete("github_commits_v2")
 
-      fresh_commits = fetch_github_commits
+      fresh_commits = fetch_github_commits_with_filter
 
       Rails.cache.write("github_commits_v2", fresh_commits, expires_in: 10.minutes)
 
-      filtered_commits = fresh_commits.select do |commit|
-        commit[:stats][:total] > 50
-      end
-
-      if filtered_commits.empty?
-        filtered_commits = [
-          {
-            date: Date.today.iso8601,
-            title: "No Significant Changes",
-            details: [ "All recent changes were minor (50 lines or less)" ],
-            sha: "filtered",
-            url: "https://github.com/carolinekks/carolinekks.dk",
-            stats: { additions: 0, deletions: 0, total: 0 }
-          }
-        ]
-      end
-
       render json: {
         message: "Cache refreshed successfully",
-        commits: filtered_commits,
+        commits: fresh_commits,
         timestamp: Time.current.iso8601
       }
     rescue => e
@@ -120,13 +86,46 @@ class ChangelogController < ApplicationController
     false
   end
 
-  def fetch_github_commits
+  def fetch_github_commits_with_filter
+    significant_commits = []
+    page = 1
+    per_page = 30
+
+    while significant_commits.size < 10 && page <= 10
+      commits_batch = fetch_github_commits_page(page, per_page)
+      break if commits_batch.empty?
+
+      significant_batch = commits_batch.select { |commit| commit[:stats][:total] > 50 }
+      significant_commits.concat(significant_batch)
+
+      page += 1
+    end
+
+    significant_commits = significant_commits.take(10)
+
+    if significant_commits.empty?
+      significant_commits = [
+        {
+          date: Date.today.iso8601,
+          title: "No Significant Changes",
+          details: [ "All recent changes were minor (50 lines or less)" ],
+          sha: "filtered",
+          url: "https://github.com/carolinekks/carolinekks.dk",
+          stats: { additions: 0, deletions: 0, total: 0 }
+        }
+      ]
+    end
+
+    significant_commits
+  end
+
+  def fetch_github_commits_page(page, per_page = 30)
     require "net/http"
     require "uri"
     require "json"
 
     repo_path = "carolinekks/carolinekks.dk"
-    url = "https://api.github.com/repos/#{repo_path}/commits?per_page=10"
+    url = "https://api.github.com/repos/#{repo_path}/commits?per_page=#{per_page}&page=#{page}"
 
     Rails.logger.info "Fetching commits from: #{url}"
 
@@ -139,7 +138,6 @@ class ChangelogController < ApplicationController
       request["User-Agent"] = "carolinekks.dk-Rails-App"
       request["Accept"] = "application/vnd.github.v3+json"
 
-      # Github api
       if ENV["GITHUB_ACCESS_TOKEN"]
         request["Authorization"] = "token #{ENV['GITHUB_ACCESS_TOKEN']}"
       end
@@ -148,24 +146,10 @@ class ChangelogController < ApplicationController
 
       if response.code == "200"
         commits_data = JSON.parse(response.body)
-        Rails.logger.info "Successfully parsed #{commits_data.size} commits"
-
-        if commits_data.any?
-          Rails.logger.info "First commit structure: #{commits_data.first.keys}"
-          Rails.logger.info "First commit author: #{commits_data.first['commit']['author']}"
-        end
+        Rails.logger.info "Successfully parsed #{commits_data.size} commits from page #{page}"
 
         if commits_data.empty?
-          return [
-            {
-              date: Date.today.strftime("%Y-%m-%d"),
-              title: "No Commits Found",
-              details: [ "The repository exists but has no commits yet." ],
-              sha: "empty",
-              url: "https://github.com/#{repo_path}",
-              stats: { additions: 0, deletions: 0, total: 0 }
-            }
-          ]
+          return []
         end
 
         commits_data.map do |commit|
@@ -173,31 +157,13 @@ class ChangelogController < ApplicationController
         end
       else
         Rails.logger.error "GitHub API Error: #{response.code} - #{response.body}"
-        [
-          {
-            date: Date.today.strftime("%Y-%m-%d"),
-            title: "GitHub API Error #{response.code}",
-            details: [ "Failed to fetch commits from GitHub API." ],
-            sha: "api_error",
-            url: "https://github.com/#{repo_path}",
-            stats: { additions: 0, deletions: 0, total: 0 }
-          }
-        ]
+        []
       end
 
     rescue => e
-      Rails.logger.error "Error in fetch_github_commits: #{e.message}"
+      Rails.logger.error "Error in fetch_github_commits_page: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
-      [
-        {
-          date: Date.today.strftime("%Y-%m-%d"),
-          title: "Connection Issue",
-          details: [ "Error fetching commits from GitHub API" ],
-          sha: "error",
-          url: "https://github.com/#{repo_path}",
-          stats: { additions: 0, deletions: 0, total: 0 }
-        }
-      ]
+      []
     end
   end
 
