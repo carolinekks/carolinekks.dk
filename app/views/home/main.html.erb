@@ -2706,11 +2706,11 @@
 
           const loadingMessage = document.createElement('div');
           loadingMessage.textContent = 'Loading changelog from GitHub...';
+          loadingMessage.classList.add('theme-text');
           loadingMessage.style.cssText = `
               text-align: center;
               width: 100%;
               padding: 20px;
-              color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
           `;
           bodyContent.appendChild(loadingMessage);
 
@@ -3039,7 +3039,7 @@
                   flex-grow: 1;
                   text-align: left;
                   font-weight: 600;
-                  font-size: 1.06rem;
+                  font-size: 0.9rem;
                   color: inherit;
               }
 
