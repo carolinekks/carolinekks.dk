@@ -1255,7 +1255,7 @@
         buttonClickSound.play();
         if (socialsBlock) return;
 
-        let discordInfoWindow = null;
+        let telegramInfoWindow = null;
 
         const newBlock = document.createElement('div');
         newBlock.className = 'window socials';
@@ -1438,8 +1438,8 @@
             transition: color 0.3s ease;
         `;
 
-        const discordContainer = document.createElement('div');
-        discordContainer.style.cssText = `
+        const telegramContainer = document.createElement('div');
+        telegramContainer.style.cssText = `
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1451,8 +1451,8 @@
             gap: 10px;
         `;
 
-        const discordButton = document.createElement('button');
-        discordButton.style.cssText = `
+        const telegramButton = document.createElement('button');
+        telegramButton.style.cssText = `
             background: transparent;
             border: none;
             cursor: alias;
@@ -1464,19 +1464,19 @@
             height: 100px;
         `;
 
-        const discordImg = document.createElement('img');
-        discordImg.src = '<%= asset_path "discord.webp" %>';
-        discordImg.setAttribute('draggable', 'false');
-        discordImg.style.cssText = `
+        const telegramImg = document.createElement('img');
+        telegramImg.src = '<%= asset_path "telegram.webp" %>';
+        telegramImg.setAttribute('draggable', 'false');
+        telegramImg.style.cssText = `
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         `;
 
-        const discordText = document.createElement('div');
-        discordText.textContent = 'Discord';
-        discordText.style.cssText = `
+        const telegramText = document.createElement('div');
+        telegramText.textContent = 'Telegram';
+        telegramText.style.cssText = `
             color: ${document.body.classList.contains('dark-mode') ? 'white' : 'black'};
             font-size: 1.2rem;
             transition: color 0.3s ease;
@@ -1617,7 +1617,7 @@
         const darkModeObserver = new MutationObserver(() => {
             steamText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             steamText2.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
-            discordText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
+            telegramText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             lastfmText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             instagramText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
             githubText.style.color = document.body.classList.contains('dark-mode') ? 'white' : 'black';
@@ -1631,7 +1631,7 @@
         if (document.body.classList.contains('dark-mode')) {
             steamText.style.color = 'white';
             steamText2.style.color = 'white';
-            discordText.style.color = 'white';
+            telegramText.style.color = 'white';
             lastfmText.style.color = 'white';
             instagramText.style.color = 'white';
             githubText.style.color = 'white';
@@ -1645,9 +1645,9 @@
         steamContainer2.appendChild(steamButton2);
         steamContainer2.appendChild(steamText2);
 
-        discordButton.appendChild(discordImg);
-        discordContainer.appendChild(discordButton);
-        discordContainer.appendChild(discordText);
+        telegramButton.appendChild(telegramImg);
+        telegramContainer.appendChild(telegramButton);
+        telegramContainer.appendChild(telegramText);
 
         lastfmButton.appendChild(lastfmImg);
         lastfmContainer.appendChild(lastfmButton);
@@ -1661,16 +1661,16 @@
         githubContainer.appendChild(githubButton);
         githubContainer.appendChild(githubText);
 
-        discordButton.addEventListener('click', () => {
-            if (discordInfoWindow) return;
+        telegramButton.addEventListener('click', () => {
+            if (telegramInfoWindow) return;
 
             buttonClickSound.volume = 0.3;
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
             
-            const discordWindow = document.createElement('div');
-            discordWindow.className = 'window discord-info';
-            discordWindow.style.cssText = `
+            const telegramWindow = document.createElement('div');
+            telegramWindow.className = 'window telegram-info';
+            telegramWindow.style.cssText = `
                 position: absolute;
                 left: ${Math.random() * (window.innerWidth - 1920)}px;
                 top: ${Math.random() * (window.innerHeight - 1080)}px;
@@ -1687,11 +1687,11 @@
                 opacity: 0;
             `;
 
-            discordInfoWindow = discordWindow;
+            telegramInfoWindow = telegramWindow;
 
-            const discordCloseButton = document.createElement('button');
-            discordCloseButton.textContent = '✖';
-            discordCloseButton.style.cssText = `
+            const telegramCloseButton = document.createElement('button');
+            telegramCloseButton.textContent = '✖';
+            telegramCloseButton.style.cssText = `
                 position: absolute;
                 top: 10px;
                 right: 10px;
@@ -1706,21 +1706,21 @@
                 transition: transform 0.2s ease, background-color 0.3s ease;
             `;
 
-            discordCloseButton.addEventListener('click', () => {
+            telegramCloseButton.addEventListener('click', () => {
               closeSound.volume = 0.3;
               closeSound.currentTime = 0;
               closeSound.play();
-              discordWindow.style.animation = 'pop-out 0.5s ease-out forwards';
+              telegramWindow.style.animation = 'pop-out 0.5s ease-out forwards';
               setTimeout(() => {
-                  discordWindow.remove();
-                  discordInfoWindow = null;
+                  telegramWindow.remove();
+                  telegramInfoWindow = null;
               }, 500);
             });
 
-            const discordTitleBar = document.createElement('div');
-            discordTitleBar.className = 'window-title';
-            discordTitleBar.textContent = 'Discord Info';
-            discordTitleBar.style.cssText = `
+            const telegramTitleBar = document.createElement('div');
+            telegramTitleBar.className = 'window-title';
+            telegramTitleBar.textContent = 'telegram Info';
+            telegramTitleBar.style.cssText = `
                 background-color: rgb(88, 83, 86);
                 color: white;
                 padding: 10px 16px;
@@ -1730,9 +1730,9 @@
                 user-select: none;
             `;
 
-            const discordBodyContent = document.createElement('div');
-            discordBodyContent.className = 'window-body';
-            discordBodyContent.style.cssText = `
+            const telegramBodyContent = document.createElement('div');
+            telegramBodyContent.className = 'window-body';
+            telegramBodyContent.style.cssText = `
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1740,25 +1740,25 @@
                 height: 100%;
                 padding: 20px;
             `;
-            const discordMainText = document.createElement('div');
-            discordMainText.className = 'main-text';
-            discordMainText.style.fontSize = '1.5rem';
-            discordMainText.textContent = 'my ONLY discord account is @carolinekks';
+            const telegramMainText = document.createElement('div');
+            telegramMainText.className = 'main-text';
+            telegramMainText.style.fontSize = '1.5rem';
+            telegramMainText.textContent = 'my ONLY telegram account is @carolinekks';
 
-            const discordSubText = document.createElement('div');
-            discordSubText.className = 'sub-text';
-            discordSubText.style.fontSize = '1.3rem';
-            discordSubText.textContent = 'any other accounts are impersonations';
+            const telegramSubText = document.createElement('div');
+            telegramSubText.className = 'sub-text';
+            telegramSubText.style.fontSize = '1.3rem';
+            telegramSubText.textContent = 'Moved off of discord due to the id implementation';
 
-            discordBodyContent.appendChild(discordMainText);
-            discordBodyContent.appendChild(discordSubText);
+            telegramBodyContent.appendChild(telegramMainText);
+            telegramBodyContent.appendChild(telegramSubText);
 
-            discordWindow.appendChild(discordCloseButton);
-            discordWindow.appendChild(discordTitleBar);
-            discordWindow.appendChild(discordBodyContent);
-            document.body.appendChild(discordWindow);
-            positionWindowRandomly(discordWindow, 700, 300);
-            makeDraggable(discordWindow);
+            telegramWindow.appendChild(telegramCloseButton);
+            telegramWindow.appendChild(telegramTitleBar);
+            telegramWindow.appendChild(telegramBodyContent);
+            document.body.appendChild(telegramWindow);
+            positionWindowRandomly(telegramWindow, 700, 300);
+            makeDraggable(telegramWindow);
         });
 
         steamButton.addEventListener('mouseover', () => {
@@ -1806,19 +1806,19 @@
             window.open('https://steamcommunity.com/id/puppygirly/', '_blank');
         });
 
-        discordButton.addEventListener('mouseover', () => {
-            discordButton.style.transform = 'scale(1.1)';
-            discordImg.style.transform = 'scale(1.05)';
+        telegramButton.addEventListener('mouseover', () => {
+            telegramButton.style.transform = 'scale(1.1)';
+            telegramImg.style.transform = 'scale(1.05)';
         });
 
-        discordButton.addEventListener('mouseout', () => {
-            discordButton.style.transform = 'scale(1)';
-            discordImg.style.transform = 'scale(1)';
+        telegramButton.addEventListener('mouseout', () => {
+            telegramButton.style.transform = 'scale(1)';
+            telegramImg.style.transform = 'scale(1)';
         });
 
-        discordButton.addEventListener('mousedown', () => {
-            discordButton.style.transform = 'scale(1)';
-            discordImg.style.transform = 'scale(1)';
+        telegramButton.addEventListener('mousedown', () => {
+            telegramButton.style.transform = 'scale(1)';
+            telegramImg.style.transform = 'scale(1)';
         });
 
         lastfmButton.addEventListener('mouseover', () => {
@@ -1894,7 +1894,7 @@
 
         bodyContent.appendChild(steamContainer);
         bodyContent.appendChild(steamContainer2);
-        bodyContent.appendChild(discordContainer);
+        bodyContent.appendChild(telegramContainer);
         bodyContent.appendChild(lastfmContainer);
         bodyContent.appendChild(instagramContainer);
         bodyContent.appendChild(githubContainer);
@@ -2040,8 +2040,8 @@
 
           const folderData = [
               { 
-                  name: 'My Life', 
-                  type: 'my-life',
+                  name: 'Me IRL', 
+                  type: 'irl',
                   description: 'Photos from my recent life'
               },
               { 
@@ -2053,6 +2053,11 @@
                   name: 'Gobi', 
                   type: 'gobi',
                   description: 'My dog :3'
+              },
+              { 
+                  name: 'Me Online', 
+                  type: 'digital',
+                  description: 'More images about me'
               }
           ];
 
@@ -2265,12 +2270,11 @@
                   const imageGrid = document.createElement('div');
                   imageGrid.className = 'image-grid'
 
-                  /* NEW IMAGES GO HERE */
+                  /* NEW IMAGES GO HERE AT THE TOP OF THE LIST */
                   /* DATE FORMAT D/M/Y */
                   const imageData = {
-                      'my-life': [
-                          { src: '<%= asset_path "irl/photo7.webp" %>', caption: 'Fallbrook, CA', alt: '19/12/25' },
-                          { src: '<%= asset_path "irl/photo6.webp" %>', caption: 'My top albums of 2025', alt: 'LEXYCAT SWEEP RAHHH' },
+                      'irl': [
+                          { src: '<%= asset_path "irl/photo6.webp" %>', caption: 'Fallbrook, CA', alt: '19/12/25' },
                           { src: '<%= asset_path "irl/photo5.webp" %>', caption: 'Huntington Beach, CA', alt: '28/08/25' },
                           { src: '<%= asset_path "irl/photo4.webp" %>', caption: 'Austin, TX', alt: '14/03/25' },
                           { src: '<%= asset_path "irl/photo3.webp" %>', caption: 'San Francisco, CA', alt: '23/01/25' },
@@ -2294,6 +2298,10 @@
                           { src: '<%= asset_path "gobi/photo3.webp" %>', caption: 'So cozy', alt: '04/29/25' },
                           { src: '<%= asset_path "gobi/photo2.webp" %>', caption: 'The eeper', alt: '04/12/25' },
                           { src: '<%= asset_path "gobi/photo1.webp" %>', caption: 'The yapper', alt: '21/02/25' }
+                      ],
+                      'digital': [
+                        { src: '<%= asset_path "digital/photo2.webp" %>', caption: 'My top 25 favorite games :3', alt: '(as of Feb 2026 at least)' },
+                        { src: '<%= asset_path "digital/photo1.webp" %>', caption: 'My most Listened albums 2025', alt: 'LEXYCAT SWEEP RAHHHHH' }
                       ]
                   };
 
